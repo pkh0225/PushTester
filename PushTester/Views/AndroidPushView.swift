@@ -1,7 +1,6 @@
 import SwiftUI
 import AppKit
 import Combine
-import UniformTypeIdentifiers
 
 @MainActor
 final class AndroidPushViewModel: ObservableObject {
@@ -24,34 +23,18 @@ final class AndroidPushViewModel: ObservableObject {
         observeChangesForAutosave()
     }
 
-    func importServiceAccount() {
-        let panel = NSOpenPanel()
-        panel.allowsMultipleSelection = false
-        panel.canChooseDirectories = false
-        panel.canChooseFiles = true
-        panel.allowedContentTypes = [.json]
-        panel.message = "Firebase 서비스 계정 JSON 파일을 선택하세요"
-        panel.prompt = "Import"
-
-        guard panel.runModal() == .OK, let url = panel.url else { return }
-
-        let accessed = url.startAccessingSecurityScopedResource()
-        defer {
-            if accessed { url.stopAccessingSecurityScopedResource() }
-        }
-
+    func applyServiceAccount(_ item: CertificatePresetItem) {
         do {
-            let contents = try String(contentsOf: url, encoding: .utf8)
-            let account = try GoogleServiceAccount.parse(from: contents)
-            serviceAccountJSON = contents
-            serviceAccountFileName = url.lastPathComponent
+            let account = try GoogleServiceAccount.parse(from: item.content)
+            serviceAccountJSON = item.content
+            serviceAccountFileName = item.name
             if projectID.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
                 projectID = account.projectID
             }
-            statusMessage = "Service account imported: \(url.lastPathComponent)"
+            statusMessage = "Service account imported: \(item.name)"
             persistLastSession()
         } catch {
-            statusMessage = "서비스 계정을 읽지 못했습니다: \(error.localizedDescription)"
+            statusMessage = "서비스 계정을 적용하지 못했습니다: \(error.localizedDescription)"
         }
     }
 
@@ -103,14 +86,7 @@ final class AndroidPushViewModel: ObservableObject {
         persistLastSession()
     }
 
-    func saveSessionToFile() {
-        let panel = NSSavePanel()
-        panel.canCreateDirectories = true
-        panel.allowedContentTypes = [.json]
-        panel.nameFieldStringValue = "PushTester-android-session.json"
-        panel.message = "현재 Android 설정을 JSON 파일로 저장합니다."
-        guard panel.runModal() == .OK, let url = panel.url else { return }
-
+    func exportSession(to url: URL) {
         let accessed = url.startAccessingSecurityScopedResource()
         defer { if accessed { url.stopAccessingSecurityScopedResource() } }
 
@@ -125,20 +101,29 @@ final class AndroidPushViewModel: ObservableObject {
 
     func loadSessionFromFile() {
         let panel = NSOpenPanel()
+        panel.allowsMultipleSelection = false
+        panel.canChooseDirectories = false
+        panel.canChooseFiles = true
         panel.allowedContentTypes = [.json]
-        panel.message = "저장된 Android 설정 JSON을 선택하세요"
-        guard panel.runModal() == .OK, let url = panel.url else { return }
+        panel.title = "Android 설정 불러오기"
+        panel.prompt = "불러오기"
 
-        let accessed = url.startAccessingSecurityScopedResource()
-        defer { if accessed { url.stopAccessingSecurityScopedResource() } }
+        panel.begin { [weak self] response in
+            guard response == .OK, let url = panel.url else { return }
+            Task { @MainActor in
+                guard let self else { return }
+                let accessed = url.startAccessingSecurityScopedResource()
+                defer { if accessed { url.stopAccessingSecurityScopedResource() } }
 
-        do {
-            let session = try AndroidSessionStore.import(from: url)
-            apply(session)
-            persistLastSession()
-            statusMessage = "Loaded: \(url.lastPathComponent)"
-        } catch {
-            statusMessage = error.localizedDescription
+                do {
+                    let session = try AndroidSessionStore.import(from: url)
+                    self.apply(session)
+                    self.persistLastSession()
+                    self.statusMessage = "Loaded: \(url.lastPathComponent)"
+                } catch {
+                    self.statusMessage = error.localizedDescription
+                }
+            }
         }
     }
 
@@ -197,80 +182,72 @@ final class AndroidPushViewModel: ObservableObject {
 struct AndroidPushView: View {
     @ObservedObject var viewModel: AndroidPushViewModel
     @EnvironmentObject private var historyStore: HistoryStore
+    @State private var showSaveSheet = false
 
     private let labelWidth: CGFloat = 130
 
     var body: some View {
         VStack(spacing: 0) {
-            ScrollView {
-                VStack(spacing: 0) {
-                    Form {
-                        LabeledContent {
-                            TextField("", text: $viewModel.projectID)
-                                .textFieldStyle(.roundedBorder)
-                        } label: {
-                            formLabel("Project ID")
-                        }
+            GeometryReader { proxy in
+                ScrollView {
+                    VStack(spacing: 0) {
+                        Form {
+                            PresetLabeledTextField(
+                                title: "Project ID",
+                                fieldKey: .projectID,
+                                text: $viewModel.projectID,
+                                labelWidth: labelWidth
+                            )
 
-                        LabeledContent {
-                            HStack(spacing: 8) {
-                                Button {
-                                    viewModel.importServiceAccount()
-                                } label: {
-                                    Label("Import JSON", systemImage: "plus.circle.fill")
+                            CertificatePresetField(
+                                title: "인증서",
+                                kind: .fcmServiceAccount,
+                                fileName: $viewModel.serviceAccountFileName,
+                                labelWidth: labelWidth
+                            ) { item in
+                                viewModel.applyServiceAccount(item)
+                            }
+
+                            PresetLabeledTextField(
+                                title: "Device Token",
+                                fieldKey: .deviceToken,
+                                text: $viewModel.deviceToken,
+                                labelWidth: labelWidth,
+                                monospace: true
+                            )
+
+                            LabeledContent {
+                                Picker("", selection: $viewModel.priority) {
+                                    ForEach(FCMPriority.allCases) { value in
+                                        Text(value.title).tag(value)
+                                    }
                                 }
-                                .tint(.green)
-                                .fixedSize()
-
-                                Text(viewModel.serviceAccountFileName)
-                                    .foregroundStyle(.secondary)
-                                    .lineLimit(1)
-                                    .truncationMode(.middle)
-                                    .frame(maxWidth: .infinity, alignment: .leading)
+                                .pickerStyle(.segmented)
+                                .labelsHidden()
+                                .frame(maxWidth: 220, alignment: .leading)
+                            } label: {
+                                formLabel("Priority")
                             }
-                        } label: {
-                            formLabel("인증서")
-                        }
 
-                        LabeledContent {
-                            TextField("", text: $viewModel.deviceToken)
-                                .textFieldStyle(.roundedBorder)
-                                .font(.system(.body, design: .monospaced))
-                        } label: {
-                            formLabel("Device Token")
-                        }
-
-                        LabeledContent {
-                            Picker("", selection: $viewModel.priority) {
-                                ForEach(FCMPriority.allCases) { value in
-                                    Text(value.title).tag(value)
+                            LabeledContent {
+                                Button("Load Template") {
+                                    viewModel.loadTemplate()
                                 }
+                            } label: {
+                                formLabel("Template")
                             }
-                            .pickerStyle(.segmented)
-                            .labelsHidden()
-                            .frame(maxWidth: 220, alignment: .leading)
-                        } label: {
-                            formLabel("Priority")
                         }
+                        .formStyle(.grouped)
+                        .scrollDisabled(true)
+                        .padding(.horizontal, 8)
+                        .padding(.top, 8)
+                        .frame(width: proxy.size.width, alignment: .leading)
 
-                        LabeledContent {
-                            Button("Load Template") {
-                                viewModel.loadTemplate()
-                            }
-                        } label: {
-                            formLabel("Template")
-                        }
-                    }
-                    .formStyle(.grouped)
-                    .scrollDisabled(true)
-                    .padding(.horizontal, 8)
-                    .padding(.top, 8)
-
-                    VStack(alignment: .leading, spacing: 8) {
-                        HStack {
-                            Text("Payload")
-                                .font(.headline)
-                            Spacer()
+                        VStack(alignment: .leading, spacing: 8) {
+                            HStack {
+                                Text("Payload")
+                                    .font(.headline)
+                                Spacer()
                             Button {
                                 viewModel.sendPush(recordingInto: historyStore)
                             } label: {
@@ -279,22 +256,23 @@ struct AndroidPushView: View {
                                     systemImage: "paperplane.circle.fill"
                                 )
                             }
-                            .buttonStyle(.borderedProminent)
-                            .tint(.yellow)
-                            .foregroundStyle(.black)
+                            .pushNotificationButtonStyle()
                             .disabled(!viewModel.canSend)
                             .keyboardShortcut(.return, modifiers: .command)
-                        }
+                            }
 
-                        TextEditor(text: $viewModel.payload)
-                            .font(.system(.body, design: .monospaced))
-                            .frame(minHeight: 260, idealHeight: 280)
-                            .overlay(
-                                RoundedRectangle(cornerRadius: 8)
-                                    .stroke(Color.secondary.opacity(0.35), lineWidth: 1)
-                            )
+                            TextEditor(text: $viewModel.payload)
+                                .font(.system(.body, design: .monospaced))
+                                .frame(minHeight: 260, idealHeight: 280)
+                                .frame(maxWidth: .infinity)
+                                .overlay(
+                                    RoundedRectangle(cornerRadius: 8)
+                                        .stroke(Color.secondary.opacity(0.35), lineWidth: 1)
+                                )
+                        }
+                        .padding(16)
+                        .frame(width: proxy.size.width, alignment: .leading)
                     }
-                    .padding(16)
                 }
             }
 
@@ -309,12 +287,20 @@ struct AndroidPushView: View {
                     .frame(maxWidth: .infinity, alignment: .leading)
 
                 Button("불러오기") { viewModel.loadSessionFromFile() }
-                Button("저장") { viewModel.saveSessionToFile() }
+                Button("저장") { showSaveSheet = true }
             }
             .padding(.horizontal, 16)
             .padding(.vertical, 12)
         }
         .background(Color(nsColor: .windowBackgroundColor))
+        .sheet(isPresented: $showSaveSheet) {
+            SessionSaveSheet(
+                title: "Android 설정 저장",
+                defaultFileName: "PushTester-android-session.json"
+            ) { url in
+                viewModel.exportSession(to: url)
+            }
+        }
     }
 
     private func formLabel(_ title: String) -> some View {

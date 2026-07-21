@@ -166,30 +166,59 @@ struct HistoryEditView: View {
     var body: some View {
         NavigationStack {
             Form {
-                TextField("제목", text: $draft.title)
-                    .textFieldStyle(.roundedBorder)
+                PresetFormTextField(
+                    title: "제목",
+                    fieldKey: .title,
+                    text: $draft.title
+                )
 
                 if isAndroid {
-                    TextField("Project ID", text: $draft.bundleID)
-                        .textFieldStyle(.roundedBorder)
-                    TextField("Device Token", text: $draft.deviceToken)
-                        .textFieldStyle(.roundedBorder)
+                    PresetFormTextField(
+                        title: "Project ID",
+                        fieldKey: .projectID,
+                        text: $draft.bundleID
+                    )
+                    PresetFormTextField(
+                        title: "Device Token",
+                        fieldKey: .deviceToken,
+                        text: $draft.deviceToken,
+                        monospace: true
+                    )
                     Picker("Priority", selection: $draft.priority) {
                         ForEach(FCMPriority.allCases) { value in
                             Text(value.title).tag(value.historyValue)
                         }
                     }
-                    TextField("Service Account 파일명", text: $draft.p8FileName)
-                        .textFieldStyle(.roundedBorder)
+                    CertificatePresetFormField(
+                        title: "인증서",
+                        kind: .fcmServiceAccount,
+                        fileName: $draft.p8FileName
+                    ) { item in
+                        draft.p8FileName = item.name
+                        draft.p8PEM = item.content
+                    }
                 } else {
-                    TextField("Bundle ID", text: $draft.bundleID)
-                        .textFieldStyle(.roundedBorder)
-                    TextField("Team ID", text: $draft.teamID)
-                        .textFieldStyle(.roundedBorder)
-                    TextField("Key ID", text: $draft.keyID)
-                        .textFieldStyle(.roundedBorder)
-                    TextField("Device Token", text: $draft.deviceToken)
-                        .textFieldStyle(.roundedBorder)
+                    PresetFormTextField(
+                        title: "Bundle ID",
+                        fieldKey: .bundleID,
+                        text: $draft.bundleID
+                    )
+                    PresetFormTextField(
+                        title: "Team ID",
+                        fieldKey: .teamID,
+                        text: $draft.teamID
+                    )
+                    PresetFormTextField(
+                        title: "Key ID",
+                        fieldKey: .keyID,
+                        text: $draft.keyID
+                    )
+                    PresetFormTextField(
+                        title: "Device Token",
+                        fieldKey: .deviceToken,
+                        text: $draft.deviceToken,
+                        monospace: true
+                    )
 
                     Picker("APN Server", selection: $draft.environment) {
                         ForEach(APNsEnvironment.allCases) { env in
@@ -209,8 +238,14 @@ struct HistoryEditView: View {
                         }
                     }
 
-                    TextField("p8 파일명", text: $draft.p8FileName)
-                        .textFieldStyle(.roundedBorder)
+                    CertificatePresetFormField(
+                        title: "인증서",
+                        kind: .apnsP8,
+                        fileName: $draft.p8FileName
+                    ) { item in
+                        draft.p8FileName = item.name
+                        draft.p8PEM = item.content
+                    }
                 }
 
                 VStack(alignment: .leading, spacing: 8) {
@@ -311,6 +346,8 @@ private enum HistoryPreviewData {
 
 #Preview("히스토리 편집") {
     HistoryEditView(item: HistoryPreviewData.sampleItem, onSave: { _ in })
+        .environmentObject(FieldPresetStore())
+        .environmentObject(CertificatePresetStore())
 }
 #endif
 

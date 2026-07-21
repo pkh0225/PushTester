@@ -71,6 +71,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 struct PushTesterApp: App {
     @NSApplicationDelegateAdaptor(AppDelegate.self) private var appDelegate
     @StateObject private var historyStore = HistoryStore()
+    @StateObject private var fieldPresetStore = FieldPresetStore()
+    @StateObject private var certificatePresetStore = CertificatePresetStore()
 
     private var launchSize: CGSize {
         if let frame = WindowFrameStore.load() {
@@ -83,6 +85,8 @@ struct PushTesterApp: App {
         WindowGroup {
             ContentView()
                 .environmentObject(historyStore)
+                .environmentObject(fieldPresetStore)
+                .environmentObject(certificatePresetStore)
                 .frame(minWidth: 900, minHeight: 480)
                 .background(WindowFrameAutosave(name: WindowFrameStore.mainWindowName))
         }

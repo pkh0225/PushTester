@@ -1,7 +1,6 @@
 import SwiftUI
 import AppKit
 import Combine
-import UniformTypeIdentifiers
 
 @MainActor
 final class PushTesterViewModel: ObservableObject {
@@ -30,42 +29,15 @@ final class PushTesterViewModel: ObservableObject {
         observeChangesForAutosave()
     }
 
-    func importP8Key() {
-        let panel = NSOpenPanel()
-        panel.allowsMultipleSelection = false
-        panel.canChooseDirectories = false
-        panel.canChooseFiles = true
-        panel.allowedContentTypes = [
-            UTType(filenameExtension: "p8") ?? .data,
-            .plainText
-        ]
-        panel.message = "APNs Auth Key (.p8) 파일을 선택하세요"
-        panel.prompt = "Import"
-
-        guard panel.runModal() == .OK, let url = panel.url else { return }
-
-        let accessed = url.startAccessingSecurityScopedResource()
-        defer {
-            if accessed {
-                url.stopAccessingSecurityScopedResource()
-            }
-        }
-
+    func applyP8Certificate(_ item: CertificatePresetItem) {
         do {
-            let contents = try readP8File(from: url)
-            guard contents.localizedCaseInsensitiveContains("BEGIN"),
-                  contents.localizedCaseInsensitiveContains("PRIVATE KEY") else {
-                statusMessage = "선택한 파일이 유효한 .p8 키가 아닙니다."
-                return
-            }
-            // 파싱 가능한지 검증하고, CryptoKit 표준 PEM으로 정규화해 저장합니다.
-            let privateKey = try APNsJWT.loadPrivateKey(from: contents)
+            let privateKey = try APNsJWT.loadPrivateKey(from: item.content)
             p8PEM = privateKey.pemRepresentation
-            p8FileName = url.lastPathComponent
-            statusMessage = "Key imported: \(url.lastPathComponent)"
+            p8FileName = item.name
+            statusMessage = "Key imported: \(item.name)"
             persistLastSession()
         } catch {
-            statusMessage = "키 파일을 읽지 못했습니다: \(error.localizedDescription)"
+            statusMessage = "키를 적용하지 못했습니다: \(error.localizedDescription)"
         }
     }
 
@@ -141,17 +113,7 @@ final class PushTesterViewModel: ObservableObject {
         persistLastSession()
     }
 
-    func saveSessionToFile() {
-        let panel = NSSavePanel()
-        panel.canCreateDirectories = true
-        panel.isExtensionHidden = false
-        panel.title = "설정 저장"
-        panel.nameFieldStringValue = "PushTester-session.json"
-        panel.allowedContentTypes = [.json]
-        panel.message = "현재 입력값을 JSON 파일로 저장합니다."
-
-        guard panel.runModal() == .OK, let url = panel.url else { return }
-
+    func exportSession(to url: URL) {
         let accessed = url.startAccessingSecurityScopedResource()
         defer {
             if accessed {
@@ -174,25 +136,29 @@ final class PushTesterViewModel: ObservableObject {
         panel.canChooseDirectories = false
         panel.canChooseFiles = true
         panel.allowedContentTypes = [.json]
-        panel.message = "저장된 PushTester 설정 JSON을 선택하세요"
+        panel.title = "설정 불러오기"
         panel.prompt = "불러오기"
 
-        guard panel.runModal() == .OK, let url = panel.url else { return }
+        panel.begin { [weak self] response in
+            guard response == .OK, let url = panel.url else { return }
+            Task { @MainActor in
+                guard let self else { return }
+                let accessed = url.startAccessingSecurityScopedResource()
+                defer {
+                    if accessed {
+                        url.stopAccessingSecurityScopedResource()
+                    }
+                }
 
-        let accessed = url.startAccessingSecurityScopedResource()
-        defer {
-            if accessed {
-                url.stopAccessingSecurityScopedResource()
+                do {
+                    let session = try SessionStore.import(from: url)
+                    self.apply(session)
+                    self.persistLastSession()
+                    self.statusMessage = "Loaded: \(url.lastPathComponent)"
+                } catch {
+                    self.statusMessage = error.localizedDescription
+                }
             }
-        }
-
-        do {
-            let session = try SessionStore.import(from: url)
-            apply(session)
-            persistLastSession()
-            statusMessage = "Loaded: \(url.lastPathComponent)"
-        } catch {
-            statusMessage = error.localizedDescription
         }
     }
 
@@ -212,20 +178,6 @@ final class PushTesterViewModel: ObservableObject {
         } else {
             statusMessage = "Restored last session"
         }
-    }
-
-    private func readP8File(from url: URL) throws -> String {
-        if let utf8 = try? String(contentsOf: url, encoding: .utf8) {
-            return utf8
-        }
-        if let utf16 = try? String(contentsOf: url, encoding: .utf16) {
-            return utf16
-        }
-        let data = try Data(contentsOf: url)
-        if let ascii = String(data: data, encoding: .ascii) {
-            return ascii
-        }
-        throw APNsJWTError.invalidP8Key
     }
 
     private func observeChangesForAutosave() {
@@ -297,6 +249,7 @@ struct ContentView: View {
     @EnvironmentObject private var historyStore: HistoryStore
     @State private var selectedHistoryID: PushHistoryItem.ID?
     @State private var platform: PushPlatform = .ios
+    @State private var showIOSSaveSheet = false
 
     private let labelWidth: CGFloat = 110
 
@@ -351,140 +304,133 @@ struct ContentView: View {
 
     private var iosDetailContent: some View {
         VStack(spacing: 0) {
-            ScrollView {
-                VStack(spacing: 0) {
-                    Form {
-                        LabeledContent {
-                            TextField("", text: $viewModel.bundleID)
-                                .textFieldStyle(.roundedBorder)
-                        } label: {
-                            formLabel("Bundle ID")
-                        }
+            GeometryReader { proxy in
+                ScrollView {
+                    VStack(spacing: 0) {
+                        Form {
+                            PresetLabeledTextField(
+                                title: "Bundle ID",
+                                fieldKey: .bundleID,
+                                text: $viewModel.bundleID,
+                                labelWidth: labelWidth
+                            )
 
-                        LabeledContent {
-                            TextField("", text: $viewModel.teamID)
-                                .textFieldStyle(.roundedBorder)
-                        } label: {
-                            formLabel("Team ID")
-                        }
+                            PresetLabeledTextField(
+                                title: "Team ID",
+                                fieldKey: .teamID,
+                                text: $viewModel.teamID,
+                                labelWidth: labelWidth
+                            )
 
-                        LabeledContent {
-                            HStack(spacing: 10) {
-                                TextField("", text: $viewModel.keyID)
-                                    .textFieldStyle(.roundedBorder)
+                            PresetLabeledTextField(
+                                title: "Key ID",
+                                fieldKey: .keyID,
+                                text: $viewModel.keyID,
+                                labelWidth: labelWidth
+                            )
+
+                            CertificatePresetField(
+                                title: "인증서",
+                                kind: .apnsP8,
+                                fileName: $viewModel.p8FileName,
+                                labelWidth: labelWidth
+                            ) { item in
+                                viewModel.applyP8Certificate(item)
                             }
-                        } label: {
-                            formLabel("Key ID")
-                        }
 
-                        LabeledContent {
-                            Button {
-                                viewModel.importP8Key()
-                            } label: {
-                                Label("Import Key (*.p8)", systemImage: "plus.circle.fill")
-                            }
-                            .tint(.green)
+                            PresetLabeledTextField(
+                                title: "Device Token",
+                                fieldKey: .deviceToken,
+                                text: $viewModel.deviceToken,
+                                labelWidth: labelWidth,
+                                monospace: true
+                            )
 
-                            Text(viewModel.p8FileName)
-                                .foregroundStyle(.secondary)
-                                .lineLimit(1)
-                                .truncationMode(.middle)
-
-                        } label: {
-                            formLabel("인증서")
-                        }
-
-                        LabeledContent {
-                            TextField("", text: $viewModel.deviceToken)
-                                .textFieldStyle(.roundedBorder)
-                                .font(.system(.body, design: .monospaced))
-                        } label: {
-                            formLabel("Device Token")
-                        }
-
-                        LabeledContent {
-                            Picker("", selection: $viewModel.environment) {
-                                ForEach(APNsEnvironment.allCases) { env in
-                                    Text(env.rawValue).tag(env)
-                                }
-                            }
-                            .pickerStyle(.segmented)
-                            .labelsHidden()
-                            .frame(maxWidth: 260, alignment: .leading)
-                        } label: {
-                            formLabel("APN Server")
-                        }
-
-                        LabeledContent {
-                            Picker("", selection: $viewModel.priority) {
-                                ForEach(APNsPriority.allCases) { value in
-                                    Text(value.title).tag(value)
-                                }
-                            }
-                            .pickerStyle(.radioGroup)
-                            .horizontalRadioGroupLayout()
-                            .labelsHidden()
-                        } label: {
-                            formLabel("APNs Priority")
-                        }
-
-                        LabeledContent {
-                            HStack(spacing: 10) {
-                                Picker("", selection: $viewModel.pushType) {
-                                    ForEach(APNsPushType.allCases) { type in
-                                        Text(type.displayName).tag(type)
+                            LabeledContent {
+                                Picker("", selection: $viewModel.environment) {
+                                    ForEach(APNsEnvironment.allCases) { env in
+                                        Text(env.rawValue).tag(env)
                                     }
                                 }
+                                .pickerStyle(.segmented)
                                 .labelsHidden()
-                                .frame(maxWidth: 180)
-                                .onChange(of: viewModel.pushType) { _, newValue in
-                                    viewModel.pushTypeChanged(to: newValue)
-                                }
-
-                                Button("Load Template") {
-                                    viewModel.loadTemplate()
-                                }
-                                .help("선택한 Push Type에 맞는 예시 Payload로 다시 채웁니다.")
-                            }
-                        } label: {
-                            formLabel("Push Type")
-                        }
-                    }
-                    .formStyle(.grouped)
-                    .scrollDisabled(true)
-                    .padding(.horizontal, 8)
-                    .padding(.top, 8)
-
-                    VStack(alignment: .leading, spacing: 8) {
-                        HStack {
-                            Text("Payload")
-                                .font(.headline)
-                            Spacer()
-
-                            Button {
-                                viewModel.sendPush(recordingInto: historyStore)
+                                .frame(maxWidth: 260, alignment: .leading)
                             } label: {
-                                Label(
-                                    viewModel.isSending ? "Sending..." : "Push Notification",
-                                    systemImage: "paperplane.circle.fill"
-                                )
+                                formLabel("APN Server")
                             }
-                            .buttonStyle(.borderedProminent)
-                            .tint(.yellow)
-                            .foregroundStyle(.black)
-                            .disabled(!viewModel.canSend)
-                            .keyboardShortcut(.return, modifiers: .command)
-                        }
 
-                        TextEditor(text: $viewModel.payload)
-                            .font(.system(.body, design: .monospaced))
-                            .frame(minHeight: 260, idealHeight: 280)
-                            .overlay(
-                                RoundedRectangle(cornerRadius: 8)
-                                    .stroke(Color.secondary.opacity(0.35), lineWidth: 1)
-                            )
+                            LabeledContent {
+                                Picker("", selection: $viewModel.priority) {
+                                    ForEach(APNsPriority.allCases) { value in
+                                        Text(value.title).tag(value)
+                                    }
+                                }
+                                .pickerStyle(.radioGroup)
+                                .horizontalRadioGroupLayout()
+                                .labelsHidden()
+                            } label: {
+                                formLabel("APNs Priority")
+                            }
+
+                            LabeledContent {
+                                HStack(spacing: 10) {
+                                    Picker("", selection: $viewModel.pushType) {
+                                        ForEach(APNsPushType.allCases) { type in
+                                            Text(type.displayName).tag(type)
+                                        }
+                                    }
+                                    .labelsHidden()
+                                    .frame(maxWidth: 180)
+                                    .onChange(of: viewModel.pushType) { _, newValue in
+                                        viewModel.pushTypeChanged(to: newValue)
+                                    }
+
+                                    Button("Load Template") {
+                                        viewModel.loadTemplate()
+                                    }
+                                    .help("선택한 Push Type에 맞는 예시 Payload로 다시 채웁니다.")
+                                }
+                            } label: {
+                                formLabel("Push Type")
+                            }
+                        }
+                        .formStyle(.grouped)
+                        .scrollDisabled(true)
+                        .padding(.horizontal, 8)
+                        .padding(.top, 8)
+                        .frame(width: proxy.size.width, alignment: .leading)
+
+                        VStack(alignment: .leading, spacing: 8) {
+                            HStack {
+                                Text("Payload")
+                                    .font(.headline)
+                                Spacer()
+
+                                Button {
+                                    viewModel.sendPush(recordingInto: historyStore)
+                                } label: {
+                                    Label(
+                                        viewModel.isSending ? "Sending..." : "Push Notification",
+                                        systemImage: "paperplane.circle.fill"
+                                    )
+                                }
+                                .pushNotificationButtonStyle()
+                                .disabled(!viewModel.canSend)
+                                .keyboardShortcut(.return, modifiers: .command)
+                            }
+
+                            TextEditor(text: $viewModel.payload)
+                                .font(.system(.body, design: .monospaced))
+                                .frame(minHeight: 260, idealHeight: 280)
+                                .frame(maxWidth: .infinity)
+                                .overlay(
+                                    RoundedRectangle(cornerRadius: 8)
+                                        .stroke(Color.secondary.opacity(0.35), lineWidth: 1)
+                                )
+                        }
+                        .padding(16)
+                        .frame(width: proxy.size.width, alignment: .leading)
                     }
-                    .padding(16)
                 }
             }
 
@@ -505,7 +451,7 @@ struct ContentView: View {
                 .keyboardShortcut("o", modifiers: .command)
 
                 Button("저장") {
-                    viewModel.saveSessionToFile()
+                    showIOSSaveSheet = true
                 }
                 .keyboardShortcut("s", modifiers: .command)
             }
@@ -514,6 +460,14 @@ struct ContentView: View {
             .background(Color(nsColor: .windowBackgroundColor))
         }
         .background(Color(nsColor: .windowBackgroundColor))
+        .sheet(isPresented: $showIOSSaveSheet) {
+            SessionSaveSheet(
+                title: "설정 저장",
+                defaultFileName: "PushTester-session.json"
+            ) { url in
+                viewModel.exportSession(to: url)
+            }
+        }
     }
 
     private func formLabel(_ title: String) -> some View {
@@ -550,8 +504,75 @@ struct ContentView: View {
     }
 }
 
+extension View {
+    /// 앱/윈도우 포커스에 따라 노란색 농도를 조절하는 푸시 버튼 스타일
+    func pushNotificationButtonStyle() -> some View {
+        modifier(PushNotificationButtonStyleModifier())
+    }
+}
+
+private struct PushNotificationButtonStyleModifier: ViewModifier {
+    @Environment(\.controlActiveState) private var controlActiveState
+    @State private var isAppActive = NSApp.isActive
+
+    private var isActive: Bool {
+        isAppActive && controlActiveState != .inactive
+    }
+
+    func body(content: Content) -> some View {
+        content
+            .buttonStyle(PushNotificationButtonStyle(isActive: isActive))
+            .onReceive(NotificationCenter.default.publisher(for: NSApplication.didBecomeActiveNotification)) { _ in
+                isAppActive = true
+            }
+            .onReceive(NotificationCenter.default.publisher(for: NSApplication.didResignActiveNotification)) { _ in
+                isAppActive = false
+            }
+    }
+}
+
+/// 활성: 선명한 노랑 / 비활성: 노란 계열을 유지한 채 한 단계 어두운 톤
+struct PushNotificationButtonStyle: ButtonStyle {
+    var isActive: Bool
+    @Environment(\.isEnabled) private var isEnabled
+
+    func makeBody(configuration: Configuration) -> some View {
+        configuration.label
+            .font(.body.weight(.medium))
+            .padding(.horizontal, 14)
+            .padding(.vertical, 6)
+            .background(
+                RoundedRectangle(cornerRadius: 6, style: .continuous)
+                    .fill(fillColor(isPressed: configuration.isPressed))
+            )
+            .foregroundStyle(Color.black.opacity(labelOpacity))
+    }
+
+    private var labelOpacity: Double {
+        if !isEnabled { return 0.45 }
+        return isActive ? 1 : 0.75
+    }
+
+    private func fillColor(isPressed: Bool) -> Color {
+        if !isEnabled {
+            return inactiveYellow.opacity(0.55)
+        }
+        if isPressed {
+            return inactiveYellow
+        }
+        return isActive ? Color.yellow : inactiveYellow
+    }
+
+    /// 검정 계열이 아니라, 확실히 구분되는 어두운 노란색
+    private var inactiveYellow: Color {
+        Color(red: 0.62, green: 0.48, blue: 0.0)
+    }
+}
+
 #Preview {
     ContentView()
         .environmentObject(HistoryStore())
+        .environmentObject(FieldPresetStore())
+        .environmentObject(CertificatePresetStore())
         .frame(width: 1100, height: 940)
 }

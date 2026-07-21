@@ -24,6 +24,11 @@
 		92A3B4C5D6E7F80912A3B4C /* AndroidSessionStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3B4C5D6E7F80912A3B4C5D /* AndroidSessionStore.swift */; };
 		B4C5D6E7F80912A3B4C5D6E /* AndroidPushView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5D6E7F80912A3B4C5D6E7 /* AndroidPushView.swift */; };
 		D6E7F80912A3B4C5D6E7F809 /* AppSupportPaths.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7F80912A3B4C5D6E7F80912 /* AppSupportPaths.swift */; };
+		E8F9012A3B4C5D6E7F809123 /* FieldPresetStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9012A3B4C5D6E7F8091234 /* FieldPresetStore.swift */; };
+		F012A3B4C5D6E7F80912345 /* PresetTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 012A3B4C5D6E7F809123456 /* PresetTextField.swift */; };
+		A1B2C3D4E5F60718293A4B70 /* CertificatePresetStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1C2D3E4F5A60718293A4B71 /* CertificatePresetStore.swift */; };
+		C1D2E3F4A5B60718293A4B72 /* CertificatePresetField.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1E2F3A4B5C60718293A4B73 /* CertificatePresetField.swift */; };
+		E1F2A3B4C5D60718293A4B74 /* SessionSaveSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1A2B3C4D5E60718293A4B75 /* SessionSaveSheet.swift */; };
 		D77B069E35D549A5B88D2FF5 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = AF9B8EA83BE8452EB758E717 /* Assets.xcassets */; };
 /* End PBXBuildFile section */
 
@@ -46,6 +51,11 @@
 		A3B4C5D6E7F80912A3B4C5D /* AndroidSessionStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AndroidSessionStore.swift; sourceTree = "<group>"; };
 		C5D6E7F80912A3B4C5D6E7 /* AndroidPushView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AndroidPushView.swift; sourceTree = "<group>"; };
 		E7F80912A3B4C5D6E7F80912 /* AppSupportPaths.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppSupportPaths.swift; sourceTree = "<group>"; };
+		F9012A3B4C5D6E7F8091234 /* FieldPresetStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FieldPresetStore.swift; sourceTree = "<group>"; };
+		012A3B4C5D6E7F809123456 /* PresetTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PresetTextField.swift; sourceTree = "<group>"; };
+		B1C2D3E4F5A60718293A4B71 /* CertificatePresetStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CertificatePresetStore.swift; sourceTree = "<group>"; };
+		D1E2F3A4B5C60718293A4B73 /* CertificatePresetField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CertificatePresetField.swift; sourceTree = "<group>"; };
+		F1A2B3C4D5E60718293A4B75 /* SessionSaveSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionSaveSheet.swift; sourceTree = "<group>"; };
 		AF9B8EA83BE8452EB758E717 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		816E1F779D23411DAA6EC2D3 /* PushTester.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = PushTester.entitlements; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -96,6 +106,9 @@
 				276CA7A3831A43839DC544ED /* ContentView.swift */,
 				192A3B4C5D6E7F80912A3B4C /* HistoryView.swift */,
 				C5D6E7F80912A3B4C5D6E7 /* AndroidPushView.swift */,
+				012A3B4C5D6E7F809123456 /* PresetTextField.swift */,
+				D1E2F3A4B5C60718293A4B73 /* CertificatePresetField.swift */,
+				F1A2B3C4D5E60718293A4B75 /* SessionSaveSheet.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -123,6 +136,8 @@
 				8192A3B4C5D6E7F80912A3B /* FCMClient.swift */,
 				A3B4C5D6E7F80912A3B4C5D /* AndroidSessionStore.swift */,
 				E7F80912A3B4C5D6E7F80912 /* AppSupportPaths.swift */,
+				F9012A3B4C5D6E7F8091234 /* FieldPresetStore.swift */,
+				B1C2D3E4F5A60718293A4B71 /* CertificatePresetStore.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -213,6 +228,11 @@
 				92A3B4C5D6E7F80912A3B4C /* AndroidSessionStore.swift in Sources */,
 				B4C5D6E7F80912A3B4C5D6E /* AndroidPushView.swift in Sources */,
 				D6E7F80912A3B4C5D6E7F809 /* AppSupportPaths.swift in Sources */,
+				E8F9012A3B4C5D6E7F809123 /* FieldPresetStore.swift in Sources */,
+				F012A3B4C5D6E7F80912345 /* PresetTextField.swift in Sources */,
+				A1B2C3D4E5F60718293A4B70 /* CertificatePresetStore.swift in Sources */,
+				C1D2E3F4A5B60718293A4B72 /* CertificatePresetField.swift in Sources */,
+				E1F2A3B4C5D60718293A4B74 /* SessionSaveSheet.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
