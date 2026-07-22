@@ -113,6 +113,15 @@ final class PushTesterViewModel: ObservableObject {
         persistLastSession()
     }
 
+    func makeSavedConfig(title: String) -> PushHistoryItem {
+        PushHistoryItem.makeSaved(from: currentSession(), title: title)
+    }
+
+    func applySavedConfig(_ item: PushHistoryItem) {
+        applyHistory(item)
+        statusMessage = "저장 설정 적용: \(item.title)"
+    }
+
     func exportSession(to url: URL) {
         let accessed = url.startAccessingSecurityScopedResource()
         defer {
@@ -221,6 +230,12 @@ final class PushTesterViewModel: ObservableObject {
         )
     }
 
+    func resetToDefaults() {
+        apply(PushSession.empty)
+        statusMessage = "Ready"
+        SessionStore.clearLastSession()
+    }
+
     private func apply(_ session: PushSession) {
         isRestoring = true
 
@@ -247,191 +262,356 @@ struct ContentView: View {
     @StateObject private var viewModel = PushTesterViewModel()
     @StateObject private var androidViewModel = AndroidPushViewModel()
     @EnvironmentObject private var historyStore: HistoryStore
+    @EnvironmentObject private var savedConfigStore: SavedConfigStore
+    @EnvironmentObject private var fieldPresetStore: FieldPresetStore
+    @EnvironmentObject private var certificatePresetStore: CertificatePresetStore
     @State private var selectedHistoryID: PushHistoryItem.ID?
+    @State private var selectedSavedConfigID: PushHistoryItem.ID?
     @State private var platform: PushPlatform = .ios
     @State private var showIOSSaveSheet = false
+    @State private var showHistorySidebar = true
+    @State private var showSavedConfigSidebar = true
+    @State private var showSettings = false
 
     private let labelWidth: CGFloat = 110
 
+    /// 펼쳐진 패널 기준으로 창이 더 작아지지 않게 해 가운데 최소 너비를 지킵니다.
+    private var effectiveWindowMinWidth: CGFloat {
+        MainLayoutMetrics.windowMinWidth(
+            sidebarVisible: showHistorySidebar,
+            inspectorVisible: showSavedConfigSidebar
+        )
+    }
+
     var body: some View {
-        NavigationSplitView {
-            HistorySidebar(
-                platform: platform,
-                selection: $selectedHistoryID
-            ) { item in
-                switch item.pushPlatform {
-                case .ios:
-                    platform = .ios
-                    viewModel.applyHistory(item)
-                case .android:
-                    platform = .android
-                    androidViewModel.applyHistory(item)
+        // NavigationSplitView/inspector 는 컬럼이 줄어들 때 실제 제안 너비와
+        // 클리핑이 어긋나 leading/trailing이 잘리는 경우가 있어 HSplitView 를 씁니다.
+        HSplitView {
+            if showHistorySidebar {
+                HistorySidebar(
+                    platform: platform,
+                    selection: $selectedHistoryID
+                ) { item in
+                    applyHistoryItem(item)
+                }
+                .frame(
+                    minWidth: MainLayoutMetrics.sideMin,
+                    idealWidth: MainLayoutMetrics.sideIdeal,
+                    maxWidth: MainLayoutMetrics.sideMax
+                )
+            }
+
+            detailColumn
+                .frame(minWidth: MainLayoutMetrics.centerMin)
+                .layoutPriority(1)
+
+            if showSavedConfigSidebar {
+                SavedConfigSidebar(
+                    platform: platform,
+                    selection: $selectedSavedConfigID,
+                    makeItem: { title in
+                        switch platform {
+                        case .ios:
+                            return viewModel.makeSavedConfig(title: title)
+                        case .android:
+                            return androidViewModel.makeSavedConfig(title: title)
+                        }
+                    },
+                    onApply: { item in
+                        applySavedConfigItem(item)
+                    }
+                )
+                .frame(
+                    minWidth: MainLayoutMetrics.sideMin,
+                    idealWidth: MainLayoutMetrics.sideIdeal,
+                    maxWidth: MainLayoutMetrics.sideMax
+                )
+            }
+        }
+        .toolbar {
+            ToolbarItem(placement: .navigation) {
+                Button {
+                    showHistorySidebar.toggle()
+                } label: {
+                    Label(
+                        "히스토리",
+                        systemImage: showHistorySidebar ? "sidebar.leading" : "sidebar.left"
+                    )
+                }
+                .help(showHistorySidebar ? "히스토리 접기" : "히스토리 펼치기")
+            }
+            // 가운데: 앱 타이틀 + 바로 오른쪽 설정 (글래스/라운드 그룹 배경 제거)
+            if #available(macOS 26.0, *) {
+                ToolbarItem(placement: .principal) {
+                    titleWithSettingsControl
+                }
+                .sharedBackgroundVisibility(.hidden)
+            } else {
+                ToolbarItem(placement: .principal) {
+                    titleWithSettingsControl
                 }
             }
-            .navigationSplitViewColumnWidth(min: 220, ideal: 280, max: 380)
-        } detail: {
-            VStack(spacing: 0) {
-                Picker("Platform", selection: $platform) {
-                    ForEach(PushPlatform.allCases) { item in
-                        Text(item.title)
-                            .font(.title3.weight(.semibold))
-                            .tag(item)
-                    }
+            ToolbarItem(placement: .primaryAction) {
+                Button {
+                    showSavedConfigSidebar.toggle()
+                } label: {
+                    Label(
+                        "저장목록",
+                        systemImage: showSavedConfigSidebar ? "sidebar.trailing" : "sidebar.right"
+                    )
                 }
-                .pickerStyle(.segmented)
-                .controlSize(.large)
-                .frame(width: 520, height: 40)
-                .frame(maxWidth: .infinity)
-                .padding(.horizontal, 24)
-                .padding(.vertical, 14)
-
-                Divider()
-
-                Group {
-                    switch platform {
-                    case .ios:
-                        iosDetailContent
-                    case .android:
-                        AndroidPushView(viewModel: androidViewModel)
-                    }
-                }
+                .help(showSavedConfigSidebar ? "저장목록 접기" : "저장목록 펼치기")
+            }
+        }
+        .sheet(isPresented: $showSettings) {
+            SettingsView { itemID in
+                handleSettingsAction(itemID)
             }
         }
         .onChange(of: platform) { _, _ in
             selectedHistoryID = nil
+            selectedSavedConfigID = nil
+        }
+        .onChange(of: showHistorySidebar) { _, _ in
+            enforceWindowMinWidth()
+        }
+        .onChange(of: showSavedConfigSidebar) { _, _ in
+            enforceWindowMinWidth()
+        }
+        .background(WindowMinWidthEnforcer(minWidth: effectiveWindowMinWidth))
+        .onAppear {
+            enforceWindowMinWidth()
+        }
+    }
+
+    /// 흰색 계열 — 순백보다 살짝 부드러운 쿨 화이트
+    private var brandTitleColor: Color {
+        Color(red: 0.93, green: 0.94, blue: 0.97)
+    }
+
+    private var titleWithSettingsControl: some View {
+        HStack(spacing: 10) {
+            Text("PushTester")
+                .font(.system(size: 20, weight: .bold))
+                .foregroundStyle(brandTitleColor)
+
+            Button {
+                showSettings = true
+            } label: {
+                Image(systemName: "gearshape")
+                    .font(.system(size: 14, weight: .semibold))
+                    .foregroundStyle(.secondary)
+            }
+            .buttonStyle(.borderless)
+            .help("설정")
+            .accessibilityLabel("설정")
+        }
+    }
+
+    private var detailColumn: some View {
+        VStack(spacing: 0) {
+            Picker("Platform", selection: $platform) {
+                ForEach(PushPlatform.allCases) { item in
+                    Text(item.title)
+                        .font(.title3.weight(.semibold))
+                        .tag(item)
+                }
+            }
+            .pickerStyle(.segmented)
+            .controlSize(.large)
+            .frame(maxWidth: 520, minHeight: 40)
+            .frame(maxWidth: .infinity)
+            .padding(.horizontal, 24)
+            .padding(.vertical, 14)
+
+            Divider()
+
+            Group {
+                switch platform {
+                case .ios:
+                    iosDetailContent
+                case .android:
+                    AndroidPushView(viewModel: androidViewModel)
+                }
+            }
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+    }
+
+    private func enforceWindowMinWidth() {
+        DispatchQueue.main.async {
+            WindowMinWidthEnforcer.apply(minWidth: effectiveWindowMinWidth, animated: true)
+        }
+    }
+
+    private func handleSettingsAction(_ itemID: AppSettingsItemID) {
+        switch itemID {
+        case .resetAllData:
+            AppDataReset.resetPersistedStores(
+                history: historyStore,
+                savedConfigs: savedConfigStore,
+                fieldPresets: fieldPresetStore,
+                certificates: certificatePresetStore
+            )
+            viewModel.resetToDefaults()
+            androidViewModel.resetToDefaults()
+            selectedHistoryID = nil
+            selectedSavedConfigID = nil
+        }
+    }
+
+    private func applyHistoryItem(_ item: PushHistoryItem) {
+        switch item.pushPlatform {
+        case .ios:
+            platform = .ios
+            viewModel.applyHistory(item)
+        case .android:
+            platform = .android
+            androidViewModel.applyHistory(item)
+        }
+    }
+
+    private func applySavedConfigItem(_ item: PushHistoryItem) {
+        switch item.pushPlatform {
+        case .ios:
+            platform = .ios
+            viewModel.applySavedConfig(item)
+        case .android:
+            platform = .android
+            androidViewModel.applySavedConfig(item)
         }
     }
 
     private var iosDetailContent: some View {
         VStack(spacing: 0) {
-            GeometryReader { proxy in
-                ScrollView {
-                    VStack(spacing: 0) {
-                        Form {
-                            PresetLabeledTextField(
-                                title: "Bundle ID",
-                                fieldKey: .bundleID,
-                                text: $viewModel.bundleID,
-                                labelWidth: labelWidth
-                            )
+            ScrollView {
+                VStack(spacing: 0) {
+                    Form {
+                        PresetLabeledTextField(
+                            title: "Bundle ID",
+                            fieldKey: .bundleID,
+                            text: $viewModel.bundleID,
+                            labelWidth: labelWidth
+                        )
 
-                            PresetLabeledTextField(
-                                title: "Team ID",
-                                fieldKey: .teamID,
-                                text: $viewModel.teamID,
-                                labelWidth: labelWidth
-                            )
+                        PresetLabeledTextField(
+                            title: "Team ID",
+                            fieldKey: .teamID,
+                            text: $viewModel.teamID,
+                            labelWidth: labelWidth
+                        )
 
-                            PresetLabeledTextField(
-                                title: "Key ID",
-                                fieldKey: .keyID,
-                                text: $viewModel.keyID,
-                                labelWidth: labelWidth
-                            )
+                        PresetLabeledTextField(
+                            title: "Key ID",
+                            fieldKey: .keyID,
+                            text: $viewModel.keyID,
+                            labelWidth: labelWidth
+                        )
 
-                            CertificatePresetField(
-                                title: "인증서",
-                                kind: .apnsP8,
-                                fileName: $viewModel.p8FileName,
-                                labelWidth: labelWidth
-                            ) { item in
-                                viewModel.applyP8Certificate(item)
-                            }
-
-                            PresetLabeledTextField(
-                                title: "Device Token",
-                                fieldKey: .deviceToken,
-                                text: $viewModel.deviceToken,
-                                labelWidth: labelWidth,
-                                monospace: true
-                            )
-
-                            LabeledContent {
-                                Picker("", selection: $viewModel.environment) {
-                                    ForEach(APNsEnvironment.allCases) { env in
-                                        Text(env.rawValue).tag(env)
-                                    }
-                                }
-                                .pickerStyle(.segmented)
-                                .labelsHidden()
-                                .frame(maxWidth: 260, alignment: .leading)
-                            } label: {
-                                formLabel("APN Server")
-                            }
-
-                            LabeledContent {
-                                Picker("", selection: $viewModel.priority) {
-                                    ForEach(APNsPriority.allCases) { value in
-                                        Text(value.title).tag(value)
-                                    }
-                                }
-                                .pickerStyle(.radioGroup)
-                                .horizontalRadioGroupLayout()
-                                .labelsHidden()
-                            } label: {
-                                formLabel("APNs Priority")
-                            }
-
-                            LabeledContent {
-                                HStack(spacing: 10) {
-                                    Picker("", selection: $viewModel.pushType) {
-                                        ForEach(APNsPushType.allCases) { type in
-                                            Text(type.displayName).tag(type)
-                                        }
-                                    }
-                                    .labelsHidden()
-                                    .frame(maxWidth: 180)
-                                    .onChange(of: viewModel.pushType) { _, newValue in
-                                        viewModel.pushTypeChanged(to: newValue)
-                                    }
-
-                                    Button("Load Template") {
-                                        viewModel.loadTemplate()
-                                    }
-                                    .help("선택한 Push Type에 맞는 예시 Payload로 다시 채웁니다.")
-                                }
-                            } label: {
-                                formLabel("Push Type")
-                            }
+                        CertificatePresetField(
+                            title: "인증서",
+                            kind: .apnsP8,
+                            fileName: $viewModel.p8FileName,
+                            labelWidth: labelWidth
+                        ) { item in
+                            viewModel.applyP8Certificate(item)
                         }
-                        .formStyle(.grouped)
-                        .scrollDisabled(true)
-                        .padding(.horizontal, 8)
-                        .padding(.top, 8)
-                        .frame(width: proxy.size.width, alignment: .leading)
 
-                        VStack(alignment: .leading, spacing: 8) {
-                            HStack {
-                                Text("Payload")
-                                    .font(.headline)
-                                Spacer()
+                        PresetLabeledTextField(
+                            title: "Device Token",
+                            fieldKey: .deviceToken,
+                            text: $viewModel.deviceToken,
+                            labelWidth: labelWidth,
+                            monospace: true
+                        )
 
-                                Button {
-                                    viewModel.sendPush(recordingInto: historyStore)
-                                } label: {
-                                    Label(
-                                        viewModel.isSending ? "Sending..." : "Push Notification",
-                                        systemImage: "paperplane.circle.fill"
-                                    )
+                        LabeledContent {
+                            Picker("", selection: $viewModel.environment) {
+                                ForEach(APNsEnvironment.allCases) { env in
+                                    Text(env.rawValue).tag(env)
                                 }
-                                .pushNotificationButtonStyle()
-                                .disabled(!viewModel.canSend)
-                                .keyboardShortcut(.return, modifiers: .command)
                             }
-
-                            TextEditor(text: $viewModel.payload)
-                                .font(.system(.body, design: .monospaced))
-                                .frame(minHeight: 260, idealHeight: 280)
-                                .frame(maxWidth: .infinity)
-                                .overlay(
-                                    RoundedRectangle(cornerRadius: 8)
-                                        .stroke(Color.secondary.opacity(0.35), lineWidth: 1)
-                                )
+                            .pickerStyle(.segmented)
+                            .labelsHidden()
+                            .frame(maxWidth: 260, alignment: .leading)
+                        } label: {
+                            formLabel("APN Server")
                         }
-                        .padding(16)
-                        .frame(width: proxy.size.width, alignment: .leading)
+
+                        LabeledContent {
+                            Picker("", selection: $viewModel.priority) {
+                                ForEach(APNsPriority.allCases) { value in
+                                    Text(value.title).tag(value)
+                                }
+                            }
+                            .pickerStyle(.radioGroup)
+                            .horizontalRadioGroupLayout()
+                            .labelsHidden()
+                        } label: {
+                            formLabel("APNs Priority")
+                        }
+
+                        LabeledContent {
+                            HStack(spacing: 10) {
+                                Picker("", selection: $viewModel.pushType) {
+                                    ForEach(APNsPushType.allCases) { type in
+                                        Text(type.displayName).tag(type)
+                                    }
+                                }
+                                .labelsHidden()
+                                .frame(maxWidth: 180)
+                                .onChange(of: viewModel.pushType) { _, newValue in
+                                    viewModel.pushTypeChanged(to: newValue)
+                                }
+
+                                Button("Load Template") {
+                                    viewModel.loadTemplate()
+                                }
+                                .help("선택한 Push Type에 맞는 예시 Payload로 다시 채웁니다.")
+                            }
+                        } label: {
+                            formLabel("Push Type")
+                        }
                     }
+                    .formStyle(.grouped)
+                    .scrollDisabled(true)
+                    .padding(.horizontal, 8)
+                    .padding(.top, 8)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+
+                    VStack(alignment: .leading, spacing: 8) {
+                        HStack {
+                            Text("Payload")
+                                .font(.headline)
+                            Spacer()
+
+                            Button {
+                                viewModel.sendPush(recordingInto: historyStore)
+                            } label: {
+                                Label(
+                                    viewModel.isSending ? "Sending..." : "Push Notification",
+                                    systemImage: "paperplane.circle.fill"
+                                )
+                            }
+                            .pushNotificationButtonStyle()
+                            .disabled(!viewModel.canSend)
+                            .keyboardShortcut(.return, modifiers: .command)
+                        }
+
+                        TextEditor(text: $viewModel.payload)
+                            .font(.system(.body, design: .monospaced))
+                            .frame(minHeight: 260, idealHeight: 280)
+                            .frame(maxWidth: .infinity)
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 8)
+                                    .stroke(Color.secondary.opacity(0.35), lineWidth: 1)
+                            )
+                    }
+                    .padding(16)
+                    .frame(maxWidth: .infinity, alignment: .leading)
                 }
+                .frame(maxWidth: .infinity)
             }
 
             Divider()
@@ -444,6 +624,10 @@ struct ContentView: View {
                     .foregroundStyle(.primary)
                     .textSelection(.enabled)
                     .frame(maxWidth: .infinity, alignment: .leading)
+
+                Text("파일로 저장")
+                    .font(.callout)
+                    .foregroundStyle(.secondary)
 
                 Button("불러오기") {
                     viewModel.loadSessionFromFile()
@@ -572,7 +756,8 @@ struct PushNotificationButtonStyle: ButtonStyle {
 #Preview {
     ContentView()
         .environmentObject(HistoryStore())
+        .environmentObject(SavedConfigStore())
         .environmentObject(FieldPresetStore())
         .environmentObject(CertificatePresetStore())
-        .frame(width: 1100, height: 940)
+        .frame(width: 1280, height: 940)
 }

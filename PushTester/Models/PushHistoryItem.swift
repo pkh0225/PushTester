@@ -162,6 +162,33 @@ struct PushHistoryItem: Codable, Identifiable, Equatable {
         )
     }
 
+    /// 앱 내 저장 목록용 (발송 결과 없이 현재 입력값 스냅샷)
+    static func makeSaved(
+        from session: PushSession,
+        title: String,
+        savedAt: Date = Date()
+    ) -> PushHistoryItem {
+        var item = make(from: session, apnsID: nil, statusCode: 0, sentAt: savedAt)
+        let trimmed = title.trimmingCharacters(in: .whitespacesAndNewlines)
+        if !trimmed.isEmpty {
+            item.title = trimmed
+        }
+        return item
+    }
+
+    static func makeAndroidSaved(
+        from session: AndroidSession,
+        title: String,
+        savedAt: Date = Date()
+    ) -> PushHistoryItem {
+        var item = makeAndroid(from: session, messageName: nil, statusCode: 0, sentAt: savedAt)
+        let trimmed = title.trimmingCharacters(in: .whitespacesAndNewlines)
+        if !trimmed.isEmpty {
+            item.title = trimmed
+        }
+        return item
+    }
+
     static func makeAndroid(
         from session: AndroidSession,
         messageName: String?,

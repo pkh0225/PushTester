@@ -48,6 +48,9 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         preparedWindowIDs.insert(id)
 
         WindowFrameStore.applyLaunchFrame(to: window)
+        // 기본 타이틀바 라벨은 숨기고, 툴바 가운데 커스텀 타이틀을 씁니다.
+        window.titleVisibility = .hidden
+        window.title = "PushTester"
     }
 
     /// 빨간 X로 마지막 창을 닫으면 앱도 함께 종료합니다.
@@ -71,6 +74,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 struct PushTesterApp: App {
     @NSApplicationDelegateAdaptor(AppDelegate.self) private var appDelegate
     @StateObject private var historyStore = HistoryStore()
+    @StateObject private var savedConfigStore = SavedConfigStore()
     @StateObject private var fieldPresetStore = FieldPresetStore()
     @StateObject private var certificatePresetStore = CertificatePresetStore()
 
@@ -78,16 +82,18 @@ struct PushTesterApp: App {
         if let frame = WindowFrameStore.load() {
             return CGSize(width: frame.width, height: frame.height)
         }
-        return CGSize(width: 1100, height: 940)
+        return CGSize(width: 1280, height: 940)
     }
 
     var body: some Scene {
         WindowGroup {
             ContentView()
                 .environmentObject(historyStore)
+                .environmentObject(savedConfigStore)
                 .environmentObject(fieldPresetStore)
                 .environmentObject(certificatePresetStore)
-                .frame(minWidth: 900, minHeight: 480)
+                // 너비 하한은 WindowMinWidthEnforcer가 패널 펼침 상태에 맞게 갱신합니다.
+                .frame(minHeight: MainLayoutMetrics.windowMinHeight)
                 .background(WindowFrameAutosave(name: WindowFrameStore.mainWindowName))
         }
         .defaultSize(width: launchSize.width, height: launchSize.height)

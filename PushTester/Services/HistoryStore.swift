@@ -73,6 +73,18 @@ final class HistoryStore: ObservableObject {
         persist()
     }
 
+    /// 특정 플랫폼 히스토리만 삭제합니다.
+    func deleteAll(for platform: PushPlatform) {
+        items.removeAll { $0.pushPlatform == platform }
+        persist()
+    }
+
+    /// 모든 히스토리를 삭제합니다.
+    func clearAll() {
+        items = []
+        persist()
+    }
+
     private func load() {
         let url = fileURL
         guard FileManager.default.fileExists(atPath: url.path) else {

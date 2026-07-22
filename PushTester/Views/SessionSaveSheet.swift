@@ -94,7 +94,7 @@ struct SessionSaveSheet: View {
 }
 
 /// macOS 시트 창 크기를 콘텐츠에 맞게 고정합니다.
-private struct CompactSheetSizer: NSViewRepresentable {
+struct CompactSheetSizer: NSViewRepresentable {
     let size: CGSize
 
     func makeNSView(context: Context) -> NSView {

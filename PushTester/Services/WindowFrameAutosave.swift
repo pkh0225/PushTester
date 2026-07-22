@@ -18,7 +18,8 @@ enum WindowFrameStore {
     }
 
     static func save(_ frame: NSRect, name: String = mainWindowName) {
-        guard frame.width >= 560, frame.height >= 480 else { return }
+        guard frame.width >= MainLayoutMetrics.windowMinWidthCollapsed,
+              frame.height >= MainLayoutMetrics.windowMinHeight else { return }
         UserDefaults.standard.set(NSStringFromRect(frame), forKey: defaultsKey(for: name))
     }
 

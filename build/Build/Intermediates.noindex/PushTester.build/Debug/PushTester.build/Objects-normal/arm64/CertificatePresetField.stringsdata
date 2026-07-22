@@ -1,0 +1,152 @@
+{
+  "source": "/Users/pkh0225/Dev/github/PushTester/PushTester/Views/CertificatePresetField.swift",
+  "tables": {
+    "Localizable": [
+      {
+        "comment": "",
+        "key": "가져오기 실패",
+        "location": {
+          "startingColumn": 16,
+          "startingLine": 94
+        }
+      },
+      {
+        "comment": "",
+        "key": "저장된 %@ 선택",
+        "location": {
+          "startingColumn": 23,
+          "startingLine": 60
+        }
+      },
+      {
+        "comment": "",
+        "key": "저장된 항목 없음",
+        "location": {
+          "startingColumn": 30,
+          "startingLine": 41
+        }
+      },
+      {
+        "comment": "",
+        "key": "%@ 목록 관리",
+        "location": {
+          "startingColumn": 23,
+          "startingLine": 78
+        }
+      },
+      {
+        "comment": "",
+        "key": "확인",
+        "location": {
+          "startingColumn": 20,
+          "startingLine": 98
+        }
+      },
+      {
+        "comment": "",
+        "key": "저장된 %@ 선택",
+        "location": {
+          "startingColumn": 19,
+          "startingLine": 214
+        }
+      },
+      {
+        "comment": "",
+        "key": "%@ 목록 관리",
+        "location": {
+          "startingColumn": 23,
+          "startingLine": 146
+        }
+      },
+      {
+        "comment": "",
+        "key": "저장된 항목 없음",
+        "location": {
+          "startingColumn": 26,
+          "startingLine": 195
+        }
+      },
+      {
+        "comment": "",
+        "key": "%@ 목록",
+        "location": {
+          "startingColumn": 22,
+          "startingLine": 245
+        }
+      },
+      {
+        "comment": "",
+        "key": "닫기",
+        "location": {
+          "startingColumn": 24,
+          "startingLine": 248
+        }
+      },
+      {
+        "comment": "",
+        "key": "목록이 비어 있습니다",
+        "location": {
+          "startingColumn": 26,
+          "startingLine": 261
+        }
+      },
+      {
+        "comment": "",
+        "key": "아래에서 인증서 파일을 추가하세요.",
+        "location": {
+          "startingColumn": 26,
+          "startingLine": 263
+        }
+      },
+      {
+        "comment": "",
+        "key": "이름",
+        "location": {
+          "startingColumn": 43,
+          "startingLine": 275
+        }
+      },
+      {
+        "comment": "",
+        "key": "삭제",
+        "location": {
+          "startingColumn": 39,
+          "startingLine": 287
+        }
+      },
+      {
+        "comment": "",
+        "key": "취소",
+        "location": {
+          "startingColumn": 28,
+          "startingLine": 322
+        }
+      },
+      {
+        "comment": "",
+        "key": "삭제",
+        "location": {
+          "startingColumn": 28,
+          "startingLine": 328
+        }
+      },
+      {
+        "comment": "",
+        "key": "삭제할까요?",
+        "location": {
+          "startingColumn": 30,
+          "startingLine": 310
+        }
+      },
+      {
+        "comment": "",
+        "key": "파일 추가",
+        "location": {
+          "startingColumn": 31,
+          "startingLine": 349
+        }
+      }
+    ]
+  },
+  "version": 1
+}

@@ -1,0 +1,184 @@
+{
+  "source": "/Users/pkh0225/Dev/github/PushTester/PushTester/Views/SavedConfigView.swift",
+  "tables": {
+    "Localizable": [
+      {
+        "comment": "",
+        "key": "선택한 저장 항목을 삭제할까요?",
+        "location": {
+          "startingColumn": 16,
+          "startingLine": 159
+        }
+      },
+      {
+        "comment": "",
+        "key": "현재 입력값을 앱에 저장",
+        "location": {
+          "startingColumn": 23,
+          "startingLine": 56
+        }
+      },
+      {
+        "comment": "",
+        "key": "설정 저장",
+        "location": {
+          "startingColumn": 37,
+          "startingLine": 57
+        }
+      },
+      {
+        "comment": "",
+        "key": "저장목록",
+        "location": {
+          "startingColumn": 26,
+          "startingLine": 39
+        }
+      },
+      {
+        "comment": "",
+        "key": "오른쪽 위 + 로\n현재 입력값을 저장하세요.",
+        "location": {
+          "startingColumn": 47,
+          "startingLine": 72
+        }
+      },
+      {
+        "comment": "",
+        "key": "저장된 설정 없음",
+        "location": {
+          "startingColumn": 29,
+          "startingLine": 70
+        }
+      },
+      {
+        "comment": "",
+        "key": "적용",
+        "location": {
+          "startingColumn": 44,
+          "startingLine": 81
+        }
+      },
+      {
+        "comment": "",
+        "key": "편집",
+        "location": {
+          "startingColumn": 44,
+          "startingLine": 85
+        }
+      },
+      {
+        "comment": "",
+        "key": "삭제",
+        "location": {
+          "startingColumn": 44,
+          "startingLine": 89
+        }
+      },
+      {
+        "comment": "",
+        "key": "편집",
+        "location": {
+          "startingColumn": 24,
+          "startingLine": 114
+        }
+      },
+      {
+        "comment": "",
+        "key": "삭제",
+        "location": {
+          "startingColumn": 24,
+          "startingLine": 119
+        }
+      },
+      {
+        "comment": "",
+        "key": "적용",
+        "location": {
+          "startingColumn": 24,
+          "startingLine": 126
+        }
+      },
+      {
+        "comment": "",
+        "key": "취소",
+        "location": {
+          "startingColumn": 20,
+          "startingLine": 160
+        }
+      },
+      {
+        "comment": "",
+        "key": "삭제",
+        "location": {
+          "startingColumn": 20,
+          "startingLine": 161
+        }
+      },
+      {
+        "comment": "",
+        "key": "삭제하면 되돌릴 수 없습니다.",
+        "location": {
+          "startingColumn": 18,
+          "startingLine": 171
+        }
+      },
+      {
+        "comment": "",
+        "key": "·",
+        "location": {
+          "startingColumn": 22,
+          "startingLine": 202
+        }
+      },
+      {
+        "comment": "",
+        "key": "·",
+        "location": {
+          "startingColumn": 22,
+          "startingLine": 204
+        }
+      },
+      {
+        "comment": "",
+        "key": "설정 저장",
+        "location": {
+          "startingColumn": 18,
+          "startingLine": 226
+        }
+      },
+      {
+        "comment": "",
+        "key": "현재 입력값을 앱에 저장합니다.",
+        "location": {
+          "startingColumn": 18,
+          "startingLine": 229
+        }
+      },
+      {
+        "comment": "",
+        "key": "이름",
+        "location": {
+          "startingColumn": 23,
+          "startingLine": 233
+        }
+      },
+      {
+        "comment": "",
+        "key": "취소",
+        "location": {
+          "startingColumn": 24,
+          "startingLine": 239
+        }
+      },
+      {
+        "comment": "",
+        "key": "저장",
+        "location": {
+          "startingColumn": 24,
+          "startingLine": 241
+        }
+      }
+    ]
+  },
+  "version": 1
+}

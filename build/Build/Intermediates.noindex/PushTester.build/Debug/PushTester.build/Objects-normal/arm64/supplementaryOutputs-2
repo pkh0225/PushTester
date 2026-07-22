@@ -1,0 +1,23 @@
+{
+  "/Users/pkh0225/Dev/github/PushTester/PushTester/Services/APNsClient.swift" : {
+    "const-values" : "/Users/pkh0225/Dev/github/PushTester/build/Build/Intermediates.noindex/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/APNsClient.swiftconstvalues",
+    "dependencies" : "/Users/pkh0225/Dev/github/PushTester/build/Build/Intermediates.noindex/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/APNsClient.d",
+    "diagnostics" : "/Users/pkh0225/Dev/github/PushTester/build/Build/Intermediates.noindex/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/APNsClient.dia",
+    "object" : "/Users/pkh0225/Dev/github/PushTester/build/Build/Intermediates.noindex/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/APNsClient.o",
+    "swift-dependencies" : "/Users/pkh0225/Dev/github/PushTester/build/Build/Intermediates.noindex/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/APNsClient.swiftdeps"
+  },
+  "/Users/pkh0225/Dev/github/PushTester/PushTester/Services/APNsJWT.swift" : {
+    "const-values" : "/Users/pkh0225/Dev/github/PushTester/build/Build/Intermediates.noindex/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/APNsJWT.swiftconstvalues",
+    "dependencies" : "/Users/pkh0225/Dev/github/PushTester/build/Build/Intermediates.noindex/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/APNsJWT.d",
+    "diagnostics" : "/Users/pkh0225/Dev/github/PushTester/build/Build/Intermediates.noindex/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/APNsJWT.dia",
+    "object" : "/Users/pkh0225/Dev/github/PushTester/build/Build/Intermediates.noindex/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/APNsJWT.o",
+    "swift-dependencies" : "/Users/pkh0225/Dev/github/PushTester/build/Build/Intermediates.noindex/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/APNsJWT.swiftdeps"
+  },
+  "/Users/pkh0225/Dev/github/PushTester/PushTester/Services/SessionStore.swift" : {
+    "const-values" : "/Users/pkh0225/Dev/github/PushTester/build/Build/Intermediates.noindex/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/SessionStore.swiftconstvalues",
+    "dependencies" : "/Users/pkh0225/Dev/github/PushTester/build/Build/Intermediates.noindex/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/SessionStore.d",
+    "diagnostics" : "/Users/pkh0225/Dev/github/PushTester/build/Build/Intermediates.noindex/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/SessionStore.dia",
+    "object" : "/Users/pkh0225/Dev/github/PushTester/build/Build/Intermediates.noindex/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/SessionStore.o",
+    "swift-dependencies" : "/Users/pkh0225/Dev/github/PushTester/build/Build/Intermediates.noindex/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/SessionStore.swiftdeps"
+  }
+}

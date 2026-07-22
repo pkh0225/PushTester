@@ -86,6 +86,15 @@ final class AndroidPushViewModel: ObservableObject {
         persistLastSession()
     }
 
+    func makeSavedConfig(title: String) -> PushHistoryItem {
+        PushHistoryItem.makeAndroidSaved(from: currentSession(), title: title)
+    }
+
+    func applySavedConfig(_ item: PushHistoryItem) {
+        applyHistory(item)
+        statusMessage = "저장 설정 적용: \(item.title)"
+    }
+
     func exportSession(to url: URL) {
         let accessed = url.startAccessingSecurityScopedResource()
         defer { if accessed { url.stopAccessingSecurityScopedResource() } }
@@ -163,6 +172,12 @@ final class AndroidPushViewModel: ObservableObject {
         )
     }
 
+    func resetToDefaults() {
+        apply(AndroidSession.empty)
+        statusMessage = "Ready"
+        AndroidSessionStore.clearLastSession()
+    }
+
     private func apply(_ session: AndroidSession) {
         isRestoring = true
         projectID = session.projectID
@@ -188,66 +203,65 @@ struct AndroidPushView: View {
 
     var body: some View {
         VStack(spacing: 0) {
-            GeometryReader { proxy in
-                ScrollView {
-                    VStack(spacing: 0) {
-                        Form {
-                            PresetLabeledTextField(
-                                title: "Project ID",
-                                fieldKey: .projectID,
-                                text: $viewModel.projectID,
-                                labelWidth: labelWidth
-                            )
+            ScrollView {
+                VStack(spacing: 0) {
+                    Form {
+                        PresetLabeledTextField(
+                            title: "Project ID",
+                            fieldKey: .projectID,
+                            text: $viewModel.projectID,
+                            labelWidth: labelWidth
+                        )
 
-                            CertificatePresetField(
-                                title: "인증서",
-                                kind: .fcmServiceAccount,
-                                fileName: $viewModel.serviceAccountFileName,
-                                labelWidth: labelWidth
-                            ) { item in
-                                viewModel.applyServiceAccount(item)
-                            }
-
-                            PresetLabeledTextField(
-                                title: "Device Token",
-                                fieldKey: .deviceToken,
-                                text: $viewModel.deviceToken,
-                                labelWidth: labelWidth,
-                                monospace: true
-                            )
-
-                            LabeledContent {
-                                Picker("", selection: $viewModel.priority) {
-                                    ForEach(FCMPriority.allCases) { value in
-                                        Text(value.title).tag(value)
-                                    }
-                                }
-                                .pickerStyle(.segmented)
-                                .labelsHidden()
-                                .frame(maxWidth: 220, alignment: .leading)
-                            } label: {
-                                formLabel("Priority")
-                            }
-
-                            LabeledContent {
-                                Button("Load Template") {
-                                    viewModel.loadTemplate()
-                                }
-                            } label: {
-                                formLabel("Template")
-                            }
+                        CertificatePresetField(
+                            title: "인증서",
+                            kind: .fcmServiceAccount,
+                            fileName: $viewModel.serviceAccountFileName,
+                            labelWidth: labelWidth
+                        ) { item in
+                            viewModel.applyServiceAccount(item)
                         }
-                        .formStyle(.grouped)
-                        .scrollDisabled(true)
-                        .padding(.horizontal, 8)
-                        .padding(.top, 8)
-                        .frame(width: proxy.size.width, alignment: .leading)
 
-                        VStack(alignment: .leading, spacing: 8) {
-                            HStack {
-                                Text("Payload")
-                                    .font(.headline)
-                                Spacer()
+                        PresetLabeledTextField(
+                            title: "Device Token",
+                            fieldKey: .deviceToken,
+                            text: $viewModel.deviceToken,
+                            labelWidth: labelWidth,
+                            monospace: true
+                        )
+
+                        LabeledContent {
+                            Picker("", selection: $viewModel.priority) {
+                                ForEach(FCMPriority.allCases) { value in
+                                    Text(value.title).tag(value)
+                                }
+                            }
+                            .pickerStyle(.segmented)
+                            .labelsHidden()
+                            .frame(maxWidth: 220, alignment: .leading)
+                        } label: {
+                            formLabel("Priority")
+                        }
+
+                        LabeledContent {
+                            Button("Load Template") {
+                                viewModel.loadTemplate()
+                            }
+                        } label: {
+                            formLabel("Template")
+                        }
+                    }
+                    .formStyle(.grouped)
+                    .scrollDisabled(true)
+                    .padding(.horizontal, 8)
+                    .padding(.top, 8)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+
+                    VStack(alignment: .leading, spacing: 8) {
+                        HStack {
+                            Text("Payload")
+                                .font(.headline)
+                            Spacer()
                             Button {
                                 viewModel.sendPush(recordingInto: historyStore)
                             } label: {
@@ -259,21 +273,21 @@ struct AndroidPushView: View {
                             .pushNotificationButtonStyle()
                             .disabled(!viewModel.canSend)
                             .keyboardShortcut(.return, modifiers: .command)
-                            }
-
-                            TextEditor(text: $viewModel.payload)
-                                .font(.system(.body, design: .monospaced))
-                                .frame(minHeight: 260, idealHeight: 280)
-                                .frame(maxWidth: .infinity)
-                                .overlay(
-                                    RoundedRectangle(cornerRadius: 8)
-                                        .stroke(Color.secondary.opacity(0.35), lineWidth: 1)
-                                )
                         }
-                        .padding(16)
-                        .frame(width: proxy.size.width, alignment: .leading)
+
+                        TextEditor(text: $viewModel.payload)
+                            .font(.system(.body, design: .monospaced))
+                            .frame(minHeight: 260, idealHeight: 280)
+                            .frame(maxWidth: .infinity)
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 8)
+                                    .stroke(Color.secondary.opacity(0.35), lineWidth: 1)
+                            )
                     }
+                    .padding(16)
+                    .frame(maxWidth: .infinity, alignment: .leading)
                 }
+                .frame(maxWidth: .infinity)
             }
 
             Divider()
@@ -285,6 +299,10 @@ struct AndroidPushView: View {
                     .font(.system(.callout))
                     .textSelection(.enabled)
                     .frame(maxWidth: .infinity, alignment: .leading)
+
+                Text("파일로 저장")
+                    .font(.callout)
+                    .foregroundStyle(.secondary)
 
                 Button("불러오기") { viewModel.loadSessionFromFile() }
                 Button("저장") { showSaveSheet = true }

@@ -1,0 +1,23 @@
+{
+  "/Users/pkh0225/Dev/github/PushTester/PushTester/Services/AppDataReset.swift" : {
+    "const-values" : "/Users/pkh0225/Dev/github/PushTester/build/Build/Intermediates.noindex/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/AppDataReset.swiftconstvalues",
+    "dependencies" : "/Users/pkh0225/Dev/github/PushTester/build/Build/Intermediates.noindex/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/AppDataReset.d",
+    "diagnostics" : "/Users/pkh0225/Dev/github/PushTester/build/Build/Intermediates.noindex/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/AppDataReset.dia",
+    "object" : "/Users/pkh0225/Dev/github/PushTester/build/Build/Intermediates.noindex/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/AppDataReset.o",
+    "swift-dependencies" : "/Users/pkh0225/Dev/github/PushTester/build/Build/Intermediates.noindex/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/AppDataReset.swiftdeps"
+  },
+  "/Users/pkh0225/Dev/github/PushTester/PushTester/Views/SettingsView.swift" : {
+    "const-values" : "/Users/pkh0225/Dev/github/PushTester/build/Build/Intermediates.noindex/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/SettingsView.swiftconstvalues",
+    "dependencies" : "/Users/pkh0225/Dev/github/PushTester/build/Build/Intermediates.noindex/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/SettingsView.d",
+    "diagnostics" : "/Users/pkh0225/Dev/github/PushTester/build/Build/Intermediates.noindex/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/SettingsView.dia",
+    "object" : "/Users/pkh0225/Dev/github/PushTester/build/Build/Intermediates.noindex/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/SettingsView.o",
+    "swift-dependencies" : "/Users/pkh0225/Dev/github/PushTester/build/Build/Intermediates.noindex/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/SettingsView.swiftdeps"
+  },
+  "/Users/pkh0225/Dev/github/PushTester/build/Build/Intermediates.noindex/PushTester.build/Debug/PushTester.build/DerivedSources/GeneratedAssetSymbols.swift" : {
+    "const-values" : "/Users/pkh0225/Dev/github/PushTester/build/Build/Intermediates.noindex/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/GeneratedAssetSymbols.swiftconstvalues",
+    "dependencies" : "/Users/pkh0225/Dev/github/PushTester/build/Build/Intermediates.noindex/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/GeneratedAssetSymbols.d",
+    "diagnostics" : "/Users/pkh0225/Dev/github/PushTester/build/Build/Intermediates.noindex/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/GeneratedAssetSymbols.dia",
+    "object" : "/Users/pkh0225/Dev/github/PushTester/build/Build/Intermediates.noindex/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/GeneratedAssetSymbols.o",
+    "swift-dependencies" : "/Users/pkh0225/Dev/github/PushTester/build/Build/Intermediates.noindex/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/GeneratedAssetSymbols.swiftdeps"
+  }
+}

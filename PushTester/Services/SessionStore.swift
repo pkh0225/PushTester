@@ -67,6 +67,10 @@ enum SessionStore {
         try write(session, to: lastSessionURL)
     }
 
+    static func clearLastSession() {
+        try? FileManager.default.removeItem(at: lastSessionURL)
+    }
+
     static func export(_ session: PushSession, to url: URL) throws {
         try write(session, to: url)
     }

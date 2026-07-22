@@ -1,0 +1,23 @@
+{
+  "/Users/pkh0225/Dev/github/PushTester/PushTester/Services/SavedConfigStore.swift" : {
+    "const-values" : "/Users/pkh0225/Dev/github/PushTester/build/Build/Intermediates.noindex/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/SavedConfigStore.swiftconstvalues",
+    "dependencies" : "/Users/pkh0225/Dev/github/PushTester/build/Build/Intermediates.noindex/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/SavedConfigStore.d",
+    "diagnostics" : "/Users/pkh0225/Dev/github/PushTester/build/Build/Intermediates.noindex/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/SavedConfigStore.dia",
+    "object" : "/Users/pkh0225/Dev/github/PushTester/build/Build/Intermediates.noindex/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/SavedConfigStore.o",
+    "swift-dependencies" : "/Users/pkh0225/Dev/github/PushTester/build/Build/Intermediates.noindex/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/SavedConfigStore.swiftdeps"
+  },
+  "/Users/pkh0225/Dev/github/PushTester/PushTester/Views/SavedConfigView.swift" : {
+    "const-values" : "/Users/pkh0225/Dev/github/PushTester/build/Build/Intermediates.noindex/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/SavedConfigView.swiftconstvalues",
+    "dependencies" : "/Users/pkh0225/Dev/github/PushTester/build/Build/Intermediates.noindex/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/SavedConfigView.d",
+    "diagnostics" : "/Users/pkh0225/Dev/github/PushTester/build/Build/Intermediates.noindex/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/SavedConfigView.dia",
+    "object" : "/Users/pkh0225/Dev/github/PushTester/build/Build/Intermediates.noindex/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/SavedConfigView.o",
+    "swift-dependencies" : "/Users/pkh0225/Dev/github/PushTester/build/Build/Intermediates.noindex/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/SavedConfigView.swiftdeps"
+  },
+  "/Users/pkh0225/Dev/github/PushTester/PushTester/Views/SessionSaveSheet.swift" : {
+    "const-values" : "/Users/pkh0225/Dev/github/PushTester/build/Build/Intermediates.noindex/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/SessionSaveSheet.swiftconstvalues",
+    "dependencies" : "/Users/pkh0225/Dev/github/PushTester/build/Build/Intermediates.noindex/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/SessionSaveSheet.d",
+    "diagnostics" : "/Users/pkh0225/Dev/github/PushTester/build/Build/Intermediates.noindex/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/SessionSaveSheet.dia",
+    "object" : "/Users/pkh0225/Dev/github/PushTester/build/Build/Intermediates.noindex/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/SessionSaveSheet.o",
+    "swift-dependencies" : "/Users/pkh0225/Dev/github/PushTester/build/Build/Intermediates.noindex/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/SessionSaveSheet.swiftdeps"
+  }
+}

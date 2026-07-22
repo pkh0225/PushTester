@@ -1,0 +1,23 @@
+{
+  "/Users/pkh0225/Dev/github/PushTester/PushTester/Models/PushModels.swift" : {
+    "const-values" : "/Users/pkh0225/Dev/github/PushTester/build/Build/Intermediates.noindex/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/PushModels.swiftconstvalues",
+    "dependencies" : "/Users/pkh0225/Dev/github/PushTester/build/Build/Intermediates.noindex/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/PushModels.d",
+    "diagnostics" : "/Users/pkh0225/Dev/github/PushTester/build/Build/Intermediates.noindex/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/PushModels.dia",
+    "object" : "/Users/pkh0225/Dev/github/PushTester/build/Build/Intermediates.noindex/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/PushModels.o",
+    "swift-dependencies" : "/Users/pkh0225/Dev/github/PushTester/build/Build/Intermediates.noindex/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/PushModels.swiftdeps"
+  },
+  "/Users/pkh0225/Dev/github/PushTester/PushTester/PushTesterApp.swift" : {
+    "const-values" : "/Users/pkh0225/Dev/github/PushTester/build/Build/Intermediates.noindex/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/PushTesterApp.swiftconstvalues",
+    "dependencies" : "/Users/pkh0225/Dev/github/PushTester/build/Build/Intermediates.noindex/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/PushTesterApp.d",
+    "diagnostics" : "/Users/pkh0225/Dev/github/PushTester/build/Build/Intermediates.noindex/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/PushTesterApp.dia",
+    "object" : "/Users/pkh0225/Dev/github/PushTester/build/Build/Intermediates.noindex/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/PushTesterApp.o",
+    "swift-dependencies" : "/Users/pkh0225/Dev/github/PushTester/build/Build/Intermediates.noindex/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/PushTesterApp.swiftdeps"
+  },
+  "/Users/pkh0225/Dev/github/PushTester/PushTester/Views/ContentView.swift" : {
+    "const-values" : "/Users/pkh0225/Dev/github/PushTester/build/Build/Intermediates.noindex/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/ContentView.swiftconstvalues",
+    "dependencies" : "/Users/pkh0225/Dev/github/PushTester/build/Build/Intermediates.noindex/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/ContentView.d",
+    "diagnostics" : "/Users/pkh0225/Dev/github/PushTester/build/Build/Intermediates.noindex/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/ContentView.dia",
+    "object" : "/Users/pkh0225/Dev/github/PushTester/build/Build/Intermediates.noindex/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/ContentView.o",
+    "swift-dependencies" : "/Users/pkh0225/Dev/github/PushTester/build/Build/Intermediates.noindex/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/ContentView.swiftdeps"
+  }
+}

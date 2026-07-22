@@ -1,0 +1,279 @@
+{
+  "" : {
+    "diagnostics" : "/Users/pkh0225/Dev/github/PushTester/build/Build/Intermediates.noindex/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/PushTester-primary.dia",
+    "emit-module-dependencies" : "/Users/pkh0225/Dev/github/PushTester/build/Build/Intermediates.noindex/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/PushTester-primary-emit-module.d",
+    "emit-module-diagnostics" : "/Users/pkh0225/Dev/github/PushTester/build/Build/Intermediates.noindex/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/PushTester-primary-emit-module.dia",
+    "pch" : "/Users/pkh0225/Dev/github/PushTester/build/Build/Intermediates.noindex/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/PushTester-primary-Bridging-header.pch",
+    "swift-dependencies" : "/Users/pkh0225/Dev/github/PushTester/build/Build/Intermediates.noindex/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/PushTester-primary.swiftdeps"
+  },
+  "/Users/pkh0225/Dev/github/PushTester/PushTester/Models/AndroidModels.swift" : {
+    "const-values" : "/Users/pkh0225/Dev/github/PushTester/build/Build/Intermediates.noindex/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/AndroidModels.swiftconstvalues",
+    "dependencies" : "/Users/pkh0225/Dev/github/PushTester/build/Build/Intermediates.noindex/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/AndroidModels.d",
+    "diagnostics" : "/Users/pkh0225/Dev/github/PushTester/build/Build/Intermediates.noindex/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/AndroidModels.dia",
+    "index-unit-output-path" : "/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/AndroidModels.o",
+    "llvm-bc" : "/Users/pkh0225/Dev/github/PushTester/build/Build/Intermediates.noindex/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/AndroidModels.bc",
+    "object" : "/Users/pkh0225/Dev/github/PushTester/build/Build/Intermediates.noindex/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/AndroidModels.o",
+    "swift-dependencies" : "/Users/pkh0225/Dev/github/PushTester/build/Build/Intermediates.noindex/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/AndroidModels.swiftdeps",
+    "swiftmodule" : "/Users/pkh0225/Dev/github/PushTester/build/Build/Intermediates.noindex/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/AndroidModels~partial.swiftmodule"
+  },
+  "/Users/pkh0225/Dev/github/PushTester/PushTester/Models/MainLayoutMetrics.swift" : {
+    "const-values" : "/Users/pkh0225/Dev/github/PushTester/build/Build/Intermediates.noindex/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/MainLayoutMetrics.swiftconstvalues",
+    "dependencies" : "/Users/pkh0225/Dev/github/PushTester/build/Build/Intermediates.noindex/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/MainLayoutMetrics.d",
+    "diagnostics" : "/Users/pkh0225/Dev/github/PushTester/build/Build/Intermediates.noindex/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/MainLayoutMetrics.dia",
+    "index-unit-output-path" : "/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/MainLayoutMetrics.o",
+    "llvm-bc" : "/Users/pkh0225/Dev/github/PushTester/build/Build/Intermediates.noindex/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/MainLayoutMetrics.bc",
+    "object" : "/Users/pkh0225/Dev/github/PushTester/build/Build/Intermediates.noindex/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/MainLayoutMetrics.o",
+    "swift-dependencies" : "/Users/pkh0225/Dev/github/PushTester/build/Build/Intermediates.noindex/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/MainLayoutMetrics.swiftdeps",
+    "swiftmodule" : "/Users/pkh0225/Dev/github/PushTester/build/Build/Intermediates.noindex/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/MainLayoutMetrics~partial.swiftmodule"
+  },
+  "/Users/pkh0225/Dev/github/PushTester/PushTester/Models/PushHistoryItem.swift" : {
+    "const-values" : "/Users/pkh0225/Dev/github/PushTester/build/Build/Intermediates.noindex/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/PushHistoryItem.swiftconstvalues",
+    "dependencies" : "/Users/pkh0225/Dev/github/PushTester/build/Build/Intermediates.noindex/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/PushHistoryItem.d",
+    "diagnostics" : "/Users/pkh0225/Dev/github/PushTester/build/Build/Intermediates.noindex/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/PushHistoryItem.dia",
+    "index-unit-output-path" : "/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/PushHistoryItem.o",
+    "llvm-bc" : "/Users/pkh0225/Dev/github/PushTester/build/Build/Intermediates.noindex/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/PushHistoryItem.bc",
+    "object" : "/Users/pkh0225/Dev/github/PushTester/build/Build/Intermediates.noindex/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/PushHistoryItem.o",
+    "swift-dependencies" : "/Users/pkh0225/Dev/github/PushTester/build/Build/Intermediates.noindex/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/PushHistoryItem.swiftdeps",
+    "swiftmodule" : "/Users/pkh0225/Dev/github/PushTester/build/Build/Intermediates.noindex/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/PushHistoryItem~partial.swiftmodule"
+  },
+  "/Users/pkh0225/Dev/github/PushTester/PushTester/Models/PushModels.swift" : {
+    "const-values" : "/Users/pkh0225/Dev/github/PushTester/build/Build/Intermediates.noindex/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/PushModels.swiftconstvalues",
+    "dependencies" : "/Users/pkh0225/Dev/github/PushTester/build/Build/Intermediates.noindex/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/PushModels.d",
+    "diagnostics" : "/Users/pkh0225/Dev/github/PushTester/build/Build/Intermediates.noindex/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/PushModels.dia",
+    "index-unit-output-path" : "/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/PushModels.o",
+    "llvm-bc" : "/Users/pkh0225/Dev/github/PushTester/build/Build/Intermediates.noindex/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/PushModels.bc",
+    "object" : "/Users/pkh0225/Dev/github/PushTester/build/Build/Intermediates.noindex/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/PushModels.o",
+    "swift-dependencies" : "/Users/pkh0225/Dev/github/PushTester/build/Build/Intermediates.noindex/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/PushModels.swiftdeps",
+    "swiftmodule" : "/Users/pkh0225/Dev/github/PushTester/build/Build/Intermediates.noindex/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/PushModels~partial.swiftmodule"
+  },
+  "/Users/pkh0225/Dev/github/PushTester/PushTester/Models/PushPlatform.swift" : {
+    "const-values" : "/Users/pkh0225/Dev/github/PushTester/build/Build/Intermediates.noindex/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/PushPlatform.swiftconstvalues",
+    "dependencies" : "/Users/pkh0225/Dev/github/PushTester/build/Build/Intermediates.noindex/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/PushPlatform.d",
+    "diagnostics" : "/Users/pkh0225/Dev/github/PushTester/build/Build/Intermediates.noindex/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/PushPlatform.dia",
+    "index-unit-output-path" : "/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/PushPlatform.o",
+    "llvm-bc" : "/Users/pkh0225/Dev/github/PushTester/build/Build/Intermediates.noindex/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/PushPlatform.bc",
+    "object" : "/Users/pkh0225/Dev/github/PushTester/build/Build/Intermediates.noindex/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/PushPlatform.o",
+    "swift-dependencies" : "/Users/pkh0225/Dev/github/PushTester/build/Build/Intermediates.noindex/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/PushPlatform.swiftdeps",
+    "swiftmodule" : "/Users/pkh0225/Dev/github/PushTester/build/Build/Intermediates.noindex/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/PushPlatform~partial.swiftmodule"
+  },
+  "/Users/pkh0225/Dev/github/PushTester/PushTester/PushTesterApp.swift" : {
+    "const-values" : "/Users/pkh0225/Dev/github/PushTester/build/Build/Intermediates.noindex/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/PushTesterApp.swiftconstvalues",
+    "dependencies" : "/Users/pkh0225/Dev/github/PushTester/build/Build/Intermediates.noindex/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/PushTesterApp.d",
+    "diagnostics" : "/Users/pkh0225/Dev/github/PushTester/build/Build/Intermediates.noindex/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/PushTesterApp.dia",
+    "index-unit-output-path" : "/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/PushTesterApp.o",
+    "llvm-bc" : "/Users/pkh0225/Dev/github/PushTester/build/Build/Intermediates.noindex/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/PushTesterApp.bc",
+    "object" : "/Users/pkh0225/Dev/github/PushTester/build/Build/Intermediates.noindex/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/PushTesterApp.o",
+    "swift-dependencies" : "/Users/pkh0225/Dev/github/PushTester/build/Build/Intermediates.noindex/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/PushTesterApp.swiftdeps",
+    "swiftmodule" : "/Users/pkh0225/Dev/github/PushTester/build/Build/Intermediates.noindex/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/PushTesterApp~partial.swiftmodule"
+  },
+  "/Users/pkh0225/Dev/github/PushTester/PushTester/Services/APNsClient.swift" : {
+    "const-values" : "/Users/pkh0225/Dev/github/PushTester/build/Build/Intermediates.noindex/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/APNsClient.swiftconstvalues",
+    "dependencies" : "/Users/pkh0225/Dev/github/PushTester/build/Build/Intermediates.noindex/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/APNsClient.d",
+    "diagnostics" : "/Users/pkh0225/Dev/github/PushTester/build/Build/Intermediates.noindex/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/APNsClient.dia",
+    "index-unit-output-path" : "/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/APNsClient.o",
+    "llvm-bc" : "/Users/pkh0225/Dev/github/PushTester/build/Build/Intermediates.noindex/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/APNsClient.bc",
+    "object" : "/Users/pkh0225/Dev/github/PushTester/build/Build/Intermediates.noindex/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/APNsClient.o",
+    "swift-dependencies" : "/Users/pkh0225/Dev/github/PushTester/build/Build/Intermediates.noindex/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/APNsClient.swiftdeps",
+    "swiftmodule" : "/Users/pkh0225/Dev/github/PushTester/build/Build/Intermediates.noindex/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/APNsClient~partial.swiftmodule"
+  },
+  "/Users/pkh0225/Dev/github/PushTester/PushTester/Services/APNsJWT.swift" : {
+    "const-values" : "/Users/pkh0225/Dev/github/PushTester/build/Build/Intermediates.noindex/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/APNsJWT.swiftconstvalues",
+    "dependencies" : "/Users/pkh0225/Dev/github/PushTester/build/Build/Intermediates.noindex/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/APNsJWT.d",
+    "diagnostics" : "/Users/pkh0225/Dev/github/PushTester/build/Build/Intermediates.noindex/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/APNsJWT.dia",
+    "index-unit-output-path" : "/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/APNsJWT.o",
+    "llvm-bc" : "/Users/pkh0225/Dev/github/PushTester/build/Build/Intermediates.noindex/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/APNsJWT.bc",
+    "object" : "/Users/pkh0225/Dev/github/PushTester/build/Build/Intermediates.noindex/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/APNsJWT.o",
+    "swift-dependencies" : "/Users/pkh0225/Dev/github/PushTester/build/Build/Intermediates.noindex/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/APNsJWT.swiftdeps",
+    "swiftmodule" : "/Users/pkh0225/Dev/github/PushTester/build/Build/Intermediates.noindex/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/APNsJWT~partial.swiftmodule"
+  },
+  "/Users/pkh0225/Dev/github/PushTester/PushTester/Services/AndroidSessionStore.swift" : {
+    "const-values" : "/Users/pkh0225/Dev/github/PushTester/build/Build/Intermediates.noindex/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/AndroidSessionStore.swiftconstvalues",
+    "dependencies" : "/Users/pkh0225/Dev/github/PushTester/build/Build/Intermediates.noindex/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/AndroidSessionStore.d",
+    "diagnostics" : "/Users/pkh0225/Dev/github/PushTester/build/Build/Intermediates.noindex/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/AndroidSessionStore.dia",
+    "index-unit-output-path" : "/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/AndroidSessionStore.o",
+    "llvm-bc" : "/Users/pkh0225/Dev/github/PushTester/build/Build/Intermediates.noindex/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/AndroidSessionStore.bc",
+    "object" : "/Users/pkh0225/Dev/github/PushTester/build/Build/Intermediates.noindex/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/AndroidSessionStore.o",
+    "swift-dependencies" : "/Users/pkh0225/Dev/github/PushTester/build/Build/Intermediates.noindex/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/AndroidSessionStore.swiftdeps",
+    "swiftmodule" : "/Users/pkh0225/Dev/github/PushTester/build/Build/Intermediates.noindex/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/AndroidSessionStore~partial.swiftmodule"
+  },
+  "/Users/pkh0225/Dev/github/PushTester/PushTester/Services/AppSupportPaths.swift" : {
+    "const-values" : "/Users/pkh0225/Dev/github/PushTester/build/Build/Intermediates.noindex/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/AppSupportPaths.swiftconstvalues",
+    "dependencies" : "/Users/pkh0225/Dev/github/PushTester/build/Build/Intermediates.noindex/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/AppSupportPaths.d",
+    "diagnostics" : "/Users/pkh0225/Dev/github/PushTester/build/Build/Intermediates.noindex/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/AppSupportPaths.dia",
+    "index-unit-output-path" : "/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/AppSupportPaths.o",
+    "llvm-bc" : "/Users/pkh0225/Dev/github/PushTester/build/Build/Intermediates.noindex/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/AppSupportPaths.bc",
+    "object" : "/Users/pkh0225/Dev/github/PushTester/build/Build/Intermediates.noindex/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/AppSupportPaths.o",
+    "swift-dependencies" : "/Users/pkh0225/Dev/github/PushTester/build/Build/Intermediates.noindex/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/AppSupportPaths.swiftdeps",
+    "swiftmodule" : "/Users/pkh0225/Dev/github/PushTester/build/Build/Intermediates.noindex/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/AppSupportPaths~partial.swiftmodule"
+  },
+  "/Users/pkh0225/Dev/github/PushTester/PushTester/Services/CertificatePresetStore.swift" : {
+    "const-values" : "/Users/pkh0225/Dev/github/PushTester/build/Build/Intermediates.noindex/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/CertificatePresetStore.swiftconstvalues",
+    "dependencies" : "/Users/pkh0225/Dev/github/PushTester/build/Build/Intermediates.noindex/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/CertificatePresetStore.d",
+    "diagnostics" : "/Users/pkh0225/Dev/github/PushTester/build/Build/Intermediates.noindex/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/CertificatePresetStore.dia",
+    "index-unit-output-path" : "/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/CertificatePresetStore.o",
+    "llvm-bc" : "/Users/pkh0225/Dev/github/PushTester/build/Build/Intermediates.noindex/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/CertificatePresetStore.bc",
+    "object" : "/Users/pkh0225/Dev/github/PushTester/build/Build/Intermediates.noindex/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/CertificatePresetStore.o",
+    "swift-dependencies" : "/Users/pkh0225/Dev/github/PushTester/build/Build/Intermediates.noindex/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/CertificatePresetStore.swiftdeps",
+    "swiftmodule" : "/Users/pkh0225/Dev/github/PushTester/build/Build/Intermediates.noindex/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/CertificatePresetStore~partial.swiftmodule"
+  },
+  "/Users/pkh0225/Dev/github/PushTester/PushTester/Services/FCMAuth.swift" : {
+    "const-values" : "/Users/pkh0225/Dev/github/PushTester/build/Build/Intermediates.noindex/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/FCMAuth.swiftconstvalues",
+    "dependencies" : "/Users/pkh0225/Dev/github/PushTester/build/Build/Intermediates.noindex/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/FCMAuth.d",
+    "diagnostics" : "/Users/pkh0225/Dev/github/PushTester/build/Build/Intermediates.noindex/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/FCMAuth.dia",
+    "index-unit-output-path" : "/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/FCMAuth.o",
+    "llvm-bc" : "/Users/pkh0225/Dev/github/PushTester/build/Build/Intermediates.noindex/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/FCMAuth.bc",
+    "object" : "/Users/pkh0225/Dev/github/PushTester/build/Build/Intermediates.noindex/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/FCMAuth.o",
+    "swift-dependencies" : "/Users/pkh0225/Dev/github/PushTester/build/Build/Intermediates.noindex/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/FCMAuth.swiftdeps",
+    "swiftmodule" : "/Users/pkh0225/Dev/github/PushTester/build/Build/Intermediates.noindex/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/FCMAuth~partial.swiftmodule"
+  },
+  "/Users/pkh0225/Dev/github/PushTester/PushTester/Services/FCMClient.swift" : {
+    "const-values" : "/Users/pkh0225/Dev/github/PushTester/build/Build/Intermediates.noindex/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/FCMClient.swiftconstvalues",
+    "dependencies" : "/Users/pkh0225/Dev/github/PushTester/build/Build/Intermediates.noindex/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/FCMClient.d",
+    "diagnostics" : "/Users/pkh0225/Dev/github/PushTester/build/Build/Intermediates.noindex/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/FCMClient.dia",
+    "index-unit-output-path" : "/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/FCMClient.o",
+    "llvm-bc" : "/Users/pkh0225/Dev/github/PushTester/build/Build/Intermediates.noindex/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/FCMClient.bc",
+    "object" : "/Users/pkh0225/Dev/github/PushTester/build/Build/Intermediates.noindex/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/FCMClient.o",
+    "swift-dependencies" : "/Users/pkh0225/Dev/github/PushTester/build/Build/Intermediates.noindex/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/FCMClient.swiftdeps",
+    "swiftmodule" : "/Users/pkh0225/Dev/github/PushTester/build/Build/Intermediates.noindex/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/FCMClient~partial.swiftmodule"
+  },
+  "/Users/pkh0225/Dev/github/PushTester/PushTester/Services/FieldPresetStore.swift" : {
+    "const-values" : "/Users/pkh0225/Dev/github/PushTester/build/Build/Intermediates.noindex/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/FieldPresetStore.swiftconstvalues",
+    "dependencies" : "/Users/pkh0225/Dev/github/PushTester/build/Build/Intermediates.noindex/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/FieldPresetStore.d",
+    "diagnostics" : "/Users/pkh0225/Dev/github/PushTester/build/Build/Intermediates.noindex/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/FieldPresetStore.dia",
+    "index-unit-output-path" : "/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/FieldPresetStore.o",
+    "llvm-bc" : "/Users/pkh0225/Dev/github/PushTester/build/Build/Intermediates.noindex/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/FieldPresetStore.bc",
+    "object" : "/Users/pkh0225/Dev/github/PushTester/build/Build/Intermediates.noindex/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/FieldPresetStore.o",
+    "swift-dependencies" : "/Users/pkh0225/Dev/github/PushTester/build/Build/Intermediates.noindex/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/FieldPresetStore.swiftdeps",
+    "swiftmodule" : "/Users/pkh0225/Dev/github/PushTester/build/Build/Intermediates.noindex/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/FieldPresetStore~partial.swiftmodule"
+  },
+  "/Users/pkh0225/Dev/github/PushTester/PushTester/Services/HistoryStore.swift" : {
+    "const-values" : "/Users/pkh0225/Dev/github/PushTester/build/Build/Intermediates.noindex/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/HistoryStore.swiftconstvalues",
+    "dependencies" : "/Users/pkh0225/Dev/github/PushTester/build/Build/Intermediates.noindex/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/HistoryStore.d",
+    "diagnostics" : "/Users/pkh0225/Dev/github/PushTester/build/Build/Intermediates.noindex/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/HistoryStore.dia",
+    "index-unit-output-path" : "/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/HistoryStore.o",
+    "llvm-bc" : "/Users/pkh0225/Dev/github/PushTester/build/Build/Intermediates.noindex/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/HistoryStore.bc",
+    "object" : "/Users/pkh0225/Dev/github/PushTester/build/Build/Intermediates.noindex/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/HistoryStore.o",
+    "swift-dependencies" : "/Users/pkh0225/Dev/github/PushTester/build/Build/Intermediates.noindex/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/HistoryStore.swiftdeps",
+    "swiftmodule" : "/Users/pkh0225/Dev/github/PushTester/build/Build/Intermediates.noindex/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/HistoryStore~partial.swiftmodule"
+  },
+  "/Users/pkh0225/Dev/github/PushTester/PushTester/Services/SavedConfigStore.swift" : {
+    "const-values" : "/Users/pkh0225/Dev/github/PushTester/build/Build/Intermediates.noindex/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/SavedConfigStore.swiftconstvalues",
+    "dependencies" : "/Users/pkh0225/Dev/github/PushTester/build/Build/Intermediates.noindex/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/SavedConfigStore.d",
+    "diagnostics" : "/Users/pkh0225/Dev/github/PushTester/build/Build/Intermediates.noindex/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/SavedConfigStore.dia",
+    "index-unit-output-path" : "/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/SavedConfigStore.o",
+    "llvm-bc" : "/Users/pkh0225/Dev/github/PushTester/build/Build/Intermediates.noindex/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/SavedConfigStore.bc",
+    "object" : "/Users/pkh0225/Dev/github/PushTester/build/Build/Intermediates.noindex/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/SavedConfigStore.o",
+    "swift-dependencies" : "/Users/pkh0225/Dev/github/PushTester/build/Build/Intermediates.noindex/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/SavedConfigStore.swiftdeps",
+    "swiftmodule" : "/Users/pkh0225/Dev/github/PushTester/build/Build/Intermediates.noindex/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/SavedConfigStore~partial.swiftmodule"
+  },
+  "/Users/pkh0225/Dev/github/PushTester/PushTester/Services/SessionStore.swift" : {
+    "const-values" : "/Users/pkh0225/Dev/github/PushTester/build/Build/Intermediates.noindex/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/SessionStore.swiftconstvalues",
+    "dependencies" : "/Users/pkh0225/Dev/github/PushTester/build/Build/Intermediates.noindex/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/SessionStore.d",
+    "diagnostics" : "/Users/pkh0225/Dev/github/PushTester/build/Build/Intermediates.noindex/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/SessionStore.dia",
+    "index-unit-output-path" : "/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/SessionStore.o",
+    "llvm-bc" : "/Users/pkh0225/Dev/github/PushTester/build/Build/Intermediates.noindex/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/SessionStore.bc",
+    "object" : "/Users/pkh0225/Dev/github/PushTester/build/Build/Intermediates.noindex/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/SessionStore.o",
+    "swift-dependencies" : "/Users/pkh0225/Dev/github/PushTester/build/Build/Intermediates.noindex/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/SessionStore.swiftdeps",
+    "swiftmodule" : "/Users/pkh0225/Dev/github/PushTester/build/Build/Intermediates.noindex/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/SessionStore~partial.swiftmodule"
+  },
+  "/Users/pkh0225/Dev/github/PushTester/PushTester/Services/WindowFrameAutosave.swift" : {
+    "const-values" : "/Users/pkh0225/Dev/github/PushTester/build/Build/Intermediates.noindex/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/WindowFrameAutosave.swiftconstvalues",
+    "dependencies" : "/Users/pkh0225/Dev/github/PushTester/build/Build/Intermediates.noindex/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/WindowFrameAutosave.d",
+    "diagnostics" : "/Users/pkh0225/Dev/github/PushTester/build/Build/Intermediates.noindex/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/WindowFrameAutosave.dia",
+    "index-unit-output-path" : "/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/WindowFrameAutosave.o",
+    "llvm-bc" : "/Users/pkh0225/Dev/github/PushTester/build/Build/Intermediates.noindex/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/WindowFrameAutosave.bc",
+    "object" : "/Users/pkh0225/Dev/github/PushTester/build/Build/Intermediates.noindex/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/WindowFrameAutosave.o",
+    "swift-dependencies" : "/Users/pkh0225/Dev/github/PushTester/build/Build/Intermediates.noindex/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/WindowFrameAutosave.swiftdeps",
+    "swiftmodule" : "/Users/pkh0225/Dev/github/PushTester/build/Build/Intermediates.noindex/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/WindowFrameAutosave~partial.swiftmodule"
+  },
+  "/Users/pkh0225/Dev/github/PushTester/PushTester/Services/WindowMinWidthEnforcer.swift" : {
+    "const-values" : "/Users/pkh0225/Dev/github/PushTester/build/Build/Intermediates.noindex/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/WindowMinWidthEnforcer.swiftconstvalues",
+    "dependencies" : "/Users/pkh0225/Dev/github/PushTester/build/Build/Intermediates.noindex/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/WindowMinWidthEnforcer.d",
+    "diagnostics" : "/Users/pkh0225/Dev/github/PushTester/build/Build/Intermediates.noindex/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/WindowMinWidthEnforcer.dia",
+    "index-unit-output-path" : "/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/WindowMinWidthEnforcer.o",
+    "llvm-bc" : "/Users/pkh0225/Dev/github/PushTester/build/Build/Intermediates.noindex/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/WindowMinWidthEnforcer.bc",
+    "object" : "/Users/pkh0225/Dev/github/PushTester/build/Build/Intermediates.noindex/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/WindowMinWidthEnforcer.o",
+    "swift-dependencies" : "/Users/pkh0225/Dev/github/PushTester/build/Build/Intermediates.noindex/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/WindowMinWidthEnforcer.swiftdeps",
+    "swiftmodule" : "/Users/pkh0225/Dev/github/PushTester/build/Build/Intermediates.noindex/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/WindowMinWidthEnforcer~partial.swiftmodule"
+  },
+  "/Users/pkh0225/Dev/github/PushTester/PushTester/Views/AndroidPushView.swift" : {
+    "const-values" : "/Users/pkh0225/Dev/github/PushTester/build/Build/Intermediates.noindex/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/AndroidPushView.swiftconstvalues",
+    "dependencies" : "/Users/pkh0225/Dev/github/PushTester/build/Build/Intermediates.noindex/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/AndroidPushView.d",
+    "diagnostics" : "/Users/pkh0225/Dev/github/PushTester/build/Build/Intermediates.noindex/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/AndroidPushView.dia",
+    "index-unit-output-path" : "/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/AndroidPushView.o",
+    "llvm-bc" : "/Users/pkh0225/Dev/github/PushTester/build/Build/Intermediates.noindex/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/AndroidPushView.bc",
+    "object" : "/Users/pkh0225/Dev/github/PushTester/build/Build/Intermediates.noindex/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/AndroidPushView.o",
+    "swift-dependencies" : "/Users/pkh0225/Dev/github/PushTester/build/Build/Intermediates.noindex/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/AndroidPushView.swiftdeps",
+    "swiftmodule" : "/Users/pkh0225/Dev/github/PushTester/build/Build/Intermediates.noindex/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/AndroidPushView~partial.swiftmodule"
+  },
+  "/Users/pkh0225/Dev/github/PushTester/PushTester/Views/CertificatePresetField.swift" : {
+    "const-values" : "/Users/pkh0225/Dev/github/PushTester/build/Build/Intermediates.noindex/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/CertificatePresetField.swiftconstvalues",
+    "dependencies" : "/Users/pkh0225/Dev/github/PushTester/build/Build/Intermediates.noindex/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/CertificatePresetField.d",
+    "diagnostics" : "/Users/pkh0225/Dev/github/PushTester/build/Build/Intermediates.noindex/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/CertificatePresetField.dia",
+    "index-unit-output-path" : "/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/CertificatePresetField.o",
+    "llvm-bc" : "/Users/pkh0225/Dev/github/PushTester/build/Build/Intermediates.noindex/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/CertificatePresetField.bc",
+    "object" : "/Users/pkh0225/Dev/github/PushTester/build/Build/Intermediates.noindex/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/CertificatePresetField.o",
+    "swift-dependencies" : "/Users/pkh0225/Dev/github/PushTester/build/Build/Intermediates.noindex/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/CertificatePresetField.swiftdeps",
+    "swiftmodule" : "/Users/pkh0225/Dev/github/PushTester/build/Build/Intermediates.noindex/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/CertificatePresetField~partial.swiftmodule"
+  },
+  "/Users/pkh0225/Dev/github/PushTester/PushTester/Views/ContentView.swift" : {
+    "const-values" : "/Users/pkh0225/Dev/github/PushTester/build/Build/Intermediates.noindex/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/ContentView.swiftconstvalues",
+    "dependencies" : "/Users/pkh0225/Dev/github/PushTester/build/Build/Intermediates.noindex/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/ContentView.d",
+    "diagnostics" : "/Users/pkh0225/Dev/github/PushTester/build/Build/Intermediates.noindex/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/ContentView.dia",
+    "index-unit-output-path" : "/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/ContentView.o",
+    "llvm-bc" : "/Users/pkh0225/Dev/github/PushTester/build/Build/Intermediates.noindex/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/ContentView.bc",
+    "object" : "/Users/pkh0225/Dev/github/PushTester/build/Build/Intermediates.noindex/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/ContentView.o",
+    "swift-dependencies" : "/Users/pkh0225/Dev/github/PushTester/build/Build/Intermediates.noindex/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/ContentView.swiftdeps",
+    "swiftmodule" : "/Users/pkh0225/Dev/github/PushTester/build/Build/Intermediates.noindex/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/ContentView~partial.swiftmodule"
+  },
+  "/Users/pkh0225/Dev/github/PushTester/PushTester/Views/HistoryView.swift" : {
+    "const-values" : "/Users/pkh0225/Dev/github/PushTester/build/Build/Intermediates.noindex/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/HistoryView.swiftconstvalues",
+    "dependencies" : "/Users/pkh0225/Dev/github/PushTester/build/Build/Intermediates.noindex/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/HistoryView.d",
+    "diagnostics" : "/Users/pkh0225/Dev/github/PushTester/build/Build/Intermediates.noindex/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/HistoryView.dia",
+    "index-unit-output-path" : "/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/HistoryView.o",
+    "llvm-bc" : "/Users/pkh0225/Dev/github/PushTester/build/Build/Intermediates.noindex/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/HistoryView.bc",
+    "object" : "/Users/pkh0225/Dev/github/PushTester/build/Build/Intermediates.noindex/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/HistoryView.o",
+    "swift-dependencies" : "/Users/pkh0225/Dev/github/PushTester/build/Build/Intermediates.noindex/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/HistoryView.swiftdeps",
+    "swiftmodule" : "/Users/pkh0225/Dev/github/PushTester/build/Build/Intermediates.noindex/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/HistoryView~partial.swiftmodule"
+  },
+  "/Users/pkh0225/Dev/github/PushTester/PushTester/Views/PresetTextField.swift" : {
+    "const-values" : "/Users/pkh0225/Dev/github/PushTester/build/Build/Intermediates.noindex/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/PresetTextField.swiftconstvalues",
+    "dependencies" : "/Users/pkh0225/Dev/github/PushTester/build/Build/Intermediates.noindex/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/PresetTextField.d",
+    "diagnostics" : "/Users/pkh0225/Dev/github/PushTester/build/Build/Intermediates.noindex/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/PresetTextField.dia",
+    "index-unit-output-path" : "/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/PresetTextField.o",
+    "llvm-bc" : "/Users/pkh0225/Dev/github/PushTester/build/Build/Intermediates.noindex/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/PresetTextField.bc",
+    "object" : "/Users/pkh0225/Dev/github/PushTester/build/Build/Intermediates.noindex/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/PresetTextField.o",
+    "swift-dependencies" : "/Users/pkh0225/Dev/github/PushTester/build/Build/Intermediates.noindex/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/PresetTextField.swiftdeps",
+    "swiftmodule" : "/Users/pkh0225/Dev/github/PushTester/build/Build/Intermediates.noindex/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/PresetTextField~partial.swiftmodule"
+  },
+  "/Users/pkh0225/Dev/github/PushTester/PushTester/Views/SavedConfigView.swift" : {
+    "const-values" : "/Users/pkh0225/Dev/github/PushTester/build/Build/Intermediates.noindex/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/SavedConfigView.swiftconstvalues",
+    "dependencies" : "/Users/pkh0225/Dev/github/PushTester/build/Build/Intermediates.noindex/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/SavedConfigView.d",
+    "diagnostics" : "/Users/pkh0225/Dev/github/PushTester/build/Build/Intermediates.noindex/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/SavedConfigView.dia",
+    "index-unit-output-path" : "/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/SavedConfigView.o",
+    "llvm-bc" : "/Users/pkh0225/Dev/github/PushTester/build/Build/Intermediates.noindex/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/SavedConfigView.bc",
+    "object" : "/Users/pkh0225/Dev/github/PushTester/build/Build/Intermediates.noindex/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/SavedConfigView.o",
+    "swift-dependencies" : "/Users/pkh0225/Dev/github/PushTester/build/Build/Intermediates.noindex/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/SavedConfigView.swiftdeps",
+    "swiftmodule" : "/Users/pkh0225/Dev/github/PushTester/build/Build/Intermediates.noindex/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/SavedConfigView~partial.swiftmodule"
+  },
+  "/Users/pkh0225/Dev/github/PushTester/PushTester/Views/SessionSaveSheet.swift" : {
+    "const-values" : "/Users/pkh0225/Dev/github/PushTester/build/Build/Intermediates.noindex/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/SessionSaveSheet.swiftconstvalues",
+    "dependencies" : "/Users/pkh0225/Dev/github/PushTester/build/Build/Intermediates.noindex/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/SessionSaveSheet.d",
+    "diagnostics" : "/Users/pkh0225/Dev/github/PushTester/build/Build/Intermediates.noindex/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/SessionSaveSheet.dia",
+    "index-unit-output-path" : "/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/SessionSaveSheet.o",
+    "llvm-bc" : "/Users/pkh0225/Dev/github/PushTester/build/Build/Intermediates.noindex/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/SessionSaveSheet.bc",
+    "object" : "/Users/pkh0225/Dev/github/PushTester/build/Build/Intermediates.noindex/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/SessionSaveSheet.o",
+    "swift-dependencies" : "/Users/pkh0225/Dev/github/PushTester/build/Build/Intermediates.noindex/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/SessionSaveSheet.swiftdeps",
+    "swiftmodule" : "/Users/pkh0225/Dev/github/PushTester/build/Build/Intermediates.noindex/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/SessionSaveSheet~partial.swiftmodule"
+  },
+  "/Users/pkh0225/Dev/github/PushTester/build/Build/Intermediates.noindex/PushTester.build/Debug/PushTester.build/DerivedSources/GeneratedAssetSymbols.swift" : {
+    "const-values" : "/Users/pkh0225/Dev/github/PushTester/build/Build/Intermediates.noindex/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/GeneratedAssetSymbols.swiftconstvalues",
+    "dependencies" : "/Users/pkh0225/Dev/github/PushTester/build/Build/Intermediates.noindex/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/GeneratedAssetSymbols.d",
+    "diagnostics" : "/Users/pkh0225/Dev/github/PushTester/build/Build/Intermediates.noindex/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/GeneratedAssetSymbols.dia",
+    "index-unit-output-path" : "/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/GeneratedAssetSymbols.o",
+    "llvm-bc" : "/Users/pkh0225/Dev/github/PushTester/build/Build/Intermediates.noindex/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/GeneratedAssetSymbols.bc",
+    "object" : "/Users/pkh0225/Dev/github/PushTester/build/Build/Intermediates.noindex/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/GeneratedAssetSymbols.o",
+    "swift-dependencies" : "/Users/pkh0225/Dev/github/PushTester/build/Build/Intermediates.noindex/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/GeneratedAssetSymbols.swiftdeps",
+    "swiftmodule" : "/Users/pkh0225/Dev/github/PushTester/build/Build/Intermediates.noindex/PushTester.build/Debug/PushTester.build/Objects-normal/arm64/GeneratedAssetSymbols~partial.swiftmodule"
+  }
+}

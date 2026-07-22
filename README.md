@@ -13,26 +13,42 @@ macOS용 iOS(APNs) / Android(FCM) 푸시 테스트 앱입니다.
   - Firebase 서비스 계정 JSON 임포트
   - Project ID, FCM Device Token
   - Priority, JSON payload
+- **3영역 레이아웃** (`HSplitView`)
+  - 왼쪽: 전송 히스토리
+  - 가운데: 입력 폼
+  - 오른쪽: 앱 내 저장목록
+  - 좌·우 패널은 툴바로 접기/펼치기
+  - 펼친 패널 기준으로 창 최소 너비 유지
 - **필드 프리셋**
   - Bundle ID, Team ID, Key ID, Device Token, Project ID 등 값 목록 관리
   - 인증서(`.p8` / 서비스 계정 JSON) 목록 관리·선택
   - 라벨 옆 ⚙으로 추가·수정·삭제 (변경 시 자동 저장)
   - 입력칸 옆 ▼로 저장된 항목 선택 시 필드에 자동 입력
+- **앱 내 설정 저장** (오른쪽 패널)
+  - `+` 로 현재 입력값을 이름과 함께 저장
+  - 적용 / 편집(이름 포함) / 삭제
+  - iOS / Android 탭별 목록 분리
+- **전송 히스토리** (왼쪽 패널)
+  - 성공한 전송 기록, 적용 / 편집 / 삭제
+  - 현재 플랫폼 히스토리 **전체 삭제**
+  - iOS / Android 탭별 목록 분리
+- **설정** (타이틀바 가운데 `PushTester` 옆 ⚙)
+  - 설정 목록 UI (`AppSettingsCatalog`로 항목 확장 가능)
+  - **전체 데이터 초기화** (히스토리·저장목록·프리셋·인증서 프리셋·마지막 세션·입력 폼)
 - 마지막 세션 자동 저장/복원
-- 세션 JSON 저장·불러오기
-- 전송 성공 히스토리 (탭별 분리, 적용/편집/삭제)
+- 세션 JSON 파일로 저장·불러오기 (하단 버튼)
 - 창 크기·위치 기억
 
 ## 요구 사항
 
-- macOS 13+
+- macOS 14+
 - Xcode 15+ (권장)
 
 ## 실행
 
 ### 데스크톱 앱
 
-이미 빌드된 앱이 있으면:
+빌드본을 복사해 둔 경우:
 
 ```text
 ~/Desktop/PushTester.app
@@ -41,14 +57,14 @@ macOS용 iOS(APNs) / Android(FCM) 푸시 테스트 앱입니다.
 ### Xcode에서 빌드
 
 ```bash
-cd ~/Desktop/PushTester
+cd /path/to/PushTester
 open PushTester.xcodeproj
 ```
 
 또는:
 
 ```bash
-xcodebuild -project PushTester.xcodeproj -scheme PushTester -configuration Release -destination 'platform=macOS' build
+xcodebuild -project PushTester.xcodeproj -scheme PushTester -configuration Debug -destination 'platform=macOS' build
 ```
 
 Bundle ID: `com.local.PushTester`
@@ -81,21 +97,53 @@ Bundle ID: `com.local.PushTester`
 
 **인증서**도 동일합니다. Import로 가져오거나 설정에서 파일을 추가하면 목록에 남고, ▼로 다시 선택할 수 있습니다.
 
-프리셋 데이터는 다음에 로컬 저장됩니다.
+### 앱 내 설정 저장 (오른쪽)
+
+파일보내기와 별개로, 현재 입력값을 앱 안에 저장해 둡니다.
+
+1. 오른쪽 위 **+** 를 눌러 이름을 지정하고 저장합니다.
+2. 목록에서 항목을 선택한 뒤 **적용**으로 폼에 반영합니다.
+3. **편집**에서는 저장 시 넣은 **이름**과 설정값을 수정할 수 있습니다 (`저장목록 편집`).
+4. **삭제**는 확인 후 진행됩니다.
+5. 툴바 오른쪽 저장목록 버튼으로 패널을 접거나 펼칠 수 있습니다.
+6. iOS / Android 탭에 따라 목록이 분리됩니다.
+
+### 히스토리 (왼쪽)
+
+1. 푸시 발송에 성공하면 왼쪽 목록에 기록됩니다.
+2. 항목을 선택한 뒤 **적용**으로 폼에 반영합니다.
+3. **편집** / **삭제**(단일) / 헤더 **휴지통**(현재 플랫폼 전체 삭제)을 사용할 수 있습니다.
+4. 툴바 왼쪽 버튼으로 패널을 접거나 펼칠 수 있습니다.
+5. iOS / Android 탭에 따라 히스토리가 분리됩니다.
+6. 히스토리 전체 삭제는 저장목록·프리셋 등 다른 데이터에는 영향을 주지 않습니다.
+
+### 설정
+
+1. 타이틀바 가운데 **PushTester** 옆 **⚙** 을 누릅니다.
+2. 설정 목록에서 항목을 선택합니다.
+3. **전체 데이터 초기화**는 확인 후 앱 내부 저장 데이터와 입력 폼을 모두 비웁니다.
+
+이후 설정 항목을 추가할 때는 `AppSettingsCatalog`에 정의를 넣고, `ContentView`의 설정 액션 처리에 동작을 연결하면 됩니다.
+
+## 로컬 저장 위치
+
+앱 데이터는 모두 로컬에만 저장됩니다.
 
 ```text
-~/Library/Application Support/PushTester/field-presets.json
-~/Library/Application Support/PushTester/certificate-presets.json
+~/Library/Application Support/PushTester/
+  push-history.json          # 전송 히스토리
+  saved-configs.json         # 앱 내 저장목록
+  field-presets.json         # 필드 프리셋
+  certificate-presets.json   # 인증서 프리셋
+  last-session.json          # iOS 마지막 세션
+  android-last-session.json  # Android 마지막 세션
 ```
 
-### 히스토리
-
-- 왼쪽 목록에 성공한 전송이 쌓입니다.
-- 항목을 선택한 뒤 **적용**, 또는 더블클릭으로 폼에 반영합니다.
-- iOS / Android 탭에 따라 히스토리가 분리됩니다.
+창 크기·위치는 UserDefaults에 저장됩니다.
 
 ## 참고
 
 - Payload는 일반 JSON이어야 합니다. 스마트 따옴표(`“ ”`)가 들어가면 파싱에 실패할 수 있습니다.
 - APNs JWT는 짧게 캐시해 `TooManyProviderTokenUpdates`(HTTP 429)를 줄입니다.
 - 키·토큰·서비스 계정·프리셋은 로컬에만 저장되며, 외부로 전송되지 않습니다(푸시 API 호출 제외).
+- 앱을 삭제하면 Application Support 데이터도 함께 정리될 수 있습니다.

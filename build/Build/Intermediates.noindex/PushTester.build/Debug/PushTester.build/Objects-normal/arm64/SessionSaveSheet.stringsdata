@@ -1,0 +1,48 @@
+{
+  "source": "/Users/pkh0225/Dev/github/PushTester/PushTester/Views/SessionSaveSheet.swift",
+  "tables": {
+    "Localizable": [
+      {
+        "comment": "",
+        "key": "기본으로 다운로드 폴더에 저장합니다.",
+        "location": {
+          "startingColumn": 18,
+          "startingLine": 23
+        }
+      },
+      {
+        "comment": "",
+        "key": "파일명",
+        "location": {
+          "startingColumn": 23,
+          "startingLine": 19
+        }
+      },
+      {
+        "comment": "",
+        "key": "다른 위치…",
+        "location": {
+          "startingColumn": 24,
+          "startingLine": 28
+        }
+      },
+      {
+        "comment": "",
+        "key": "취소",
+        "location": {
+          "startingColumn": 24,
+          "startingLine": 34
+        }
+      },
+      {
+        "comment": "",
+        "key": "저장",
+        "location": {
+          "startingColumn": 24,
+          "startingLine": 39
+        }
+      }
+    ]
+  },
+  "version": 1
+}

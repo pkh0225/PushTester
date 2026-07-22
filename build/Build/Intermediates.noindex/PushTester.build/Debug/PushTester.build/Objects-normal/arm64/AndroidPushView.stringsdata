@@ -1,0 +1,72 @@
+{
+  "source": "/Users/pkh0225/Dev/github/PushTester/PushTester/Views/AndroidPushView.swift",
+  "tables": {
+    "Localizable": [
+      {
+        "comment": "",
+        "key": "",
+        "location": {
+          "startingColumn": 36,
+          "startingLine": 234
+        }
+      },
+      {
+        "comment": "",
+        "key": "Load Template",
+        "location": {
+          "startingColumn": 36,
+          "startingLine": 247
+        }
+      },
+      {
+        "comment": "",
+        "key": "Payload",
+        "location": {
+          "startingColumn": 34,
+          "startingLine": 262
+        }
+      },
+      {
+        "comment": "",
+        "key": "Sending...",
+        "location": {
+          "startingColumn": 59,
+          "startingLine": 269
+        }
+      },
+      {
+        "comment": "",
+        "key": "Push Notification",
+        "location": {
+          "startingColumn": 74,
+          "startingLine": 269
+        }
+      },
+      {
+        "comment": "",
+        "key": "파일로 저장",
+        "location": {
+          "startingColumn": 22,
+          "startingLine": 303
+        }
+      },
+      {
+        "comment": "",
+        "key": "불러오기",
+        "location": {
+          "startingColumn": 24,
+          "startingLine": 307
+        }
+      },
+      {
+        "comment": "",
+        "key": "저장",
+        "location": {
+          "startingColumn": 24,
+          "startingLine": 308
+        }
+      }
+    ]
+  },
+  "version": 1
+}

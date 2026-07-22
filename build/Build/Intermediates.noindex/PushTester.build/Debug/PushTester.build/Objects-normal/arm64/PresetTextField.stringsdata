@@ -1,0 +1,176 @@
+{
+  "source": "/Users/pkh0225/Dev/github/PushTester/PushTester/Views/PresetTextField.swift",
+  "tables": {
+    "Localizable": [
+      {
+        "comment": "",
+        "key": "저장된 %@ 선택",
+        "location": {
+          "startingColumn": 23,
+          "startingLine": 53
+        }
+      },
+      {
+        "comment": "",
+        "key": "",
+        "location": {
+          "startingColumn": 35,
+          "startingLine": 23
+        }
+      },
+      {
+        "comment": "",
+        "key": "",
+        "location": {
+          "startingColumn": 35,
+          "startingLine": 27
+        }
+      },
+      {
+        "comment": "",
+        "key": "저장된 항목 없음",
+        "location": {
+          "startingColumn": 30,
+          "startingLine": 34
+        }
+      },
+      {
+        "comment": "",
+        "key": "%@ 목록 관리",
+        "location": {
+          "startingColumn": 23,
+          "startingLine": 70
+        }
+      },
+      {
+        "comment": "",
+        "key": "",
+        "location": {
+          "startingColumn": 27,
+          "startingLine": 115
+        }
+      },
+      {
+        "comment": "",
+        "key": "",
+        "location": {
+          "startingColumn": 27,
+          "startingLine": 119
+        }
+      },
+      {
+        "comment": "",
+        "key": "저장된 %@ 선택",
+        "location": {
+          "startingColumn": 19,
+          "startingLine": 144
+        }
+      },
+      {
+        "comment": "",
+        "key": "%@ 목록 관리",
+        "location": {
+          "startingColumn": 23,
+          "startingLine": 106
+        }
+      },
+      {
+        "comment": "",
+        "key": "저장된 항목 없음",
+        "location": {
+          "startingColumn": 26,
+          "startingLine": 125
+        }
+      },
+      {
+        "comment": "",
+        "key": "%@ 목록",
+        "location": {
+          "startingColumn": 22,
+          "startingLine": 175
+        }
+      },
+      {
+        "comment": "",
+        "key": "닫기",
+        "location": {
+          "startingColumn": 24,
+          "startingLine": 178
+        }
+      },
+      {
+        "comment": "",
+        "key": "목록이 비어 있습니다",
+        "location": {
+          "startingColumn": 26,
+          "startingLine": 191
+        }
+      },
+      {
+        "comment": "",
+        "key": "아래에서 %@ 값을 추가하세요.",
+        "location": {
+          "startingColumn": 26,
+          "startingLine": 193
+        }
+      },
+      {
+        "comment": "",
+        "key": "값",
+        "location": {
+          "startingColumn": 43,
+          "startingLine": 205
+        }
+      },
+      {
+        "comment": "",
+        "key": "삭제",
+        "location": {
+          "startingColumn": 39,
+          "startingLine": 220
+        }
+      },
+      {
+        "comment": "",
+        "key": "취소",
+        "location": {
+          "startingColumn": 28,
+          "startingLine": 255
+        }
+      },
+      {
+        "comment": "",
+        "key": "삭제",
+        "location": {
+          "startingColumn": 28,
+          "startingLine": 261
+        }
+      },
+      {
+        "comment": "",
+        "key": "삭제할까요?",
+        "location": {
+          "startingColumn": 30,
+          "startingLine": 243
+        }
+      },
+      {
+        "comment": "",
+        "key": "새 %@",
+        "location": {
+          "startingColumn": 31,
+          "startingLine": 277
+        }
+      },
+      {
+        "comment": "",
+        "key": "추가",
+        "location": {
+          "startingColumn": 28,
+          "startingLine": 281
+        }
+      }
+    ]
+  },
+  "version": 1
+}

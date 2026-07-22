@@ -54,6 +54,11 @@ final class FieldPresetStore: ObservableObject {
         persist()
     }
 
+    func clearAll() {
+        valuesByKey = [:]
+        persist()
+    }
+
     private func load() {
         let url = Self.fileURL
         guard FileManager.default.fileExists(atPath: url.path),

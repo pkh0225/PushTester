@@ -1,0 +1,256 @@
+{
+  "source": "/Users/pkh0225/Dev/github/PushTester/PushTester/Views/HistoryView.swift",
+  "tables": {
+    "Localizable": [
+      {
+        "comment": "",
+        "key": "선택한 히스토리를 삭제할까요?",
+        "location": {
+          "startingColumn": 16,
+          "startingLine": 139
+        }
+      },
+      {
+        "comment": "",
+        "key": "%@ 히스토리를 모두 삭제할까요?",
+        "location": {
+          "startingColumn": 16,
+          "startingLine": 153
+        }
+      },
+      {
+        "comment": "",
+        "key": "%@ 히스토리 전체 삭제",
+        "location": {
+          "startingColumn": 23,
+          "startingLine": 44
+        }
+      },
+      {
+        "comment": "",
+        "key": "히스토리 전체 삭제",
+        "location": {
+          "startingColumn": 37,
+          "startingLine": 45
+        }
+      },
+      {
+        "comment": "",
+        "key": "히스토리",
+        "location": {
+          "startingColumn": 26,
+          "startingLine": 28
+        }
+      },
+      {
+        "comment": "",
+        "key": "%@ 푸시 발송에 성공하면\n여기에 기록됩니다.",
+        "location": {
+          "startingColumn": 47,
+          "startingLine": 60
+        }
+      },
+      {
+        "comment": "",
+        "key": "히스토리 없음",
+        "location": {
+          "startingColumn": 29,
+          "startingLine": 58
+        }
+      },
+      {
+        "comment": "",
+        "key": "적용",
+        "location": {
+          "startingColumn": 44,
+          "startingLine": 69
+        }
+      },
+      {
+        "comment": "",
+        "key": "편집",
+        "location": {
+          "startingColumn": 44,
+          "startingLine": 73
+        }
+      },
+      {
+        "comment": "",
+        "key": "삭제",
+        "location": {
+          "startingColumn": 44,
+          "startingLine": 77
+        }
+      },
+      {
+        "comment": "",
+        "key": "편집",
+        "location": {
+          "startingColumn": 24,
+          "startingLine": 101
+        }
+      },
+      {
+        "comment": "",
+        "key": "삭제",
+        "location": {
+          "startingColumn": 24,
+          "startingLine": 106
+        }
+      },
+      {
+        "comment": "",
+        "key": "적용",
+        "location": {
+          "startingColumn": 24,
+          "startingLine": 113
+        }
+      },
+      {
+        "comment": "",
+        "key": "취소",
+        "location": {
+          "startingColumn": 20,
+          "startingLine": 140
+        }
+      },
+      {
+        "comment": "",
+        "key": "삭제",
+        "location": {
+          "startingColumn": 20,
+          "startingLine": 141
+        }
+      },
+      {
+        "comment": "",
+        "key": "삭제하면 되돌릴 수 없습니다.",
+        "location": {
+          "startingColumn": 18,
+          "startingLine": 151
+        }
+      },
+      {
+        "comment": "",
+        "key": "취소",
+        "location": {
+          "startingColumn": 20,
+          "startingLine": 154
+        }
+      },
+      {
+        "comment": "",
+        "key": "전체 삭제",
+        "location": {
+          "startingColumn": 20,
+          "startingLine": 155
+        }
+      },
+      {
+        "comment": "",
+        "key": "히스토리만 삭제됩니다. 저장목록과 다른 데이터는 유지됩니다.",
+        "location": {
+          "startingColumn": 18,
+          "startingLine": 160
+        }
+      },
+      {
+        "comment": "",
+        "key": "·",
+        "location": {
+          "startingColumn": 22,
+          "startingLine": 191
+        }
+      },
+      {
+        "comment": "",
+        "key": "·",
+        "location": {
+          "startingColumn": 22,
+          "startingLine": 193
+        }
+      },
+      {
+        "comment": "",
+        "key": "·",
+        "location": {
+          "startingColumn": 22,
+          "startingLine": 195
+        }
+      },
+      {
+        "comment": "",
+        "key": "Priority",
+        "location": {
+          "startingColumn": 28,
+          "startingLine": 279
+        }
+      },
+      {
+        "comment": "",
+        "key": "APN Server",
+        "location": {
+          "startingColumn": 28,
+          "startingLine": 315
+        }
+      },
+      {
+        "comment": "",
+        "key": "Priority",
+        "location": {
+          "startingColumn": 28,
+          "startingLine": 321
+        }
+      },
+      {
+        "comment": "",
+        "key": "Push Type",
+        "location": {
+          "startingColumn": 28,
+          "startingLine": 327
+        }
+      },
+      {
+        "comment": "",
+        "key": "",
+        "location": {
+          "startingColumn": 35,
+          "startingLine": 256
+        }
+      },
+      {
+        "comment": "",
+        "key": "Payload",
+        "location": {
+          "startingColumn": 26,
+          "startingLine": 344
+        }
+      },
+      {
+        "comment": "",
+        "key": "취소",
+        "location": {
+          "startingColumn": 28,
+          "startingLine": 360
+        }
+      },
+      {
+        "comment": "",
+        "key": "저장",
+        "location": {
+          "startingColumn": 28,
+          "startingLine": 363
+        }
+      },
+      {
+        "comment": "",
+        "key": "메인 입력 영역",
+        "location": {
+          "startingColumn": 1,
+          "startingLine": 417
+        }
+      }
+    ]
+  },
+  "version": 1
+}

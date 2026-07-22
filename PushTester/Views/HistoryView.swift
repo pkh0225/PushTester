@@ -10,6 +10,7 @@ struct HistorySidebar: View {
 
     @State private var editingItem: PushHistoryItem?
     @State private var showDeleteConfirm = false
+    @State private var showDeleteAllConfirm = false
 
     private var filteredItems: [PushHistoryItem] {
         historyStore.items(for: platform)
@@ -22,39 +23,76 @@ struct HistorySidebar: View {
 
     var body: some View {
         VStack(spacing: 0) {
-            if filteredItems.isEmpty {
-                ContentUnavailableView(
-                    "히스토리 없음",
-                    systemImage: "clock",
-                    description: Text("\(platform.title) 푸시 발송에 성공하면\n여기에 기록됩니다.")
-                )
-            } else {
-                List(filteredItems, selection: $selection) { item in
-                    HistoryRow(item: item)
-                        .tag(item.id)
-                        // simultaneousGesture로 단일 클릭 선택은 유지하고 더블클릭만 적용
-                        .simultaneousGesture(
-                            TapGesture(count: 2).onEnded {
-                                selection = item.id
-                                onApply(item)
-                            }
-                        )
-                        .contextMenu {
-                            Button("적용") {
-                                selection = item.id
-                                onApply(item)
-                            }
-                            Button("편집") {
-                                editingItem = item
-                            }
-                            Divider()
-                            Button("삭제", role: .destructive) {
-                                selection = item.id
-                                showDeleteConfirm = true
-                            }
-                        }
+            HStack(alignment: .center) {
+                VStack(alignment: .leading, spacing: 2) {
+                    Text("히스토리")
+                        .font(.headline)
+                    Text(platform.title)
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
                 }
-                .listStyle(.sidebar)
+                Spacer(minLength: 0)
+                Button {
+                    showDeleteAllConfirm = true
+                } label: {
+                    Image(systemName: "trash")
+                        .font(.system(size: 12, weight: .semibold))
+                }
+                .buttonStyle(.borderless)
+                .foregroundStyle(.red)
+                .disabled(filteredItems.isEmpty)
+                .help("\(platform.title) 히스토리 전체 삭제")
+                .accessibilityLabel("히스토리 전체 삭제")
+            }
+            .padding(.horizontal, 12)
+            .padding(.vertical, 10)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .background(.bar)
+
+            Divider()
+
+            ScrollViewReader { proxy in
+                Group {
+                    if filteredItems.isEmpty {
+                        ContentUnavailableView(
+                            "히스토리 없음",
+                            systemImage: "clock",
+                            description: Text("\(platform.title) 푸시 발송에 성공하면\n여기에 기록됩니다.")
+                        )
+                    } else {
+                        List(filteredItems, selection: $selection) { item in
+                            HistoryRow(item: item)
+                                .tag(item.id)
+                                .id(item.id)
+                                .listRowInsets(EdgeInsets(top: 6, leading: 10, bottom: 6, trailing: 10))
+                                .contextMenu {
+                                    Button("적용") {
+                                        selection = item.id
+                                        onApply(item)
+                                    }
+                                    Button("편집") {
+                                        editingItem = item
+                                    }
+                                    Divider()
+                                    Button("삭제", role: .destructive) {
+                                        selection = item.id
+                                        showDeleteConfirm = true
+                                    }
+                                }
+                        }
+                        .listStyle(.plain)
+                        .scrollContentBackground(.hidden)
+                        .contentMargins(.top, 4, for: .scrollContent)
+                    }
+                }
+                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+                // 새 항목이 맨 위에 들어올 때 스크롤이 어긋나 잘리지 않도록 보정
+                .onChange(of: filteredItems.first?.id) { _, newID in
+                    guard let newID else { return }
+                    DispatchQueue.main.async {
+                        proxy.scrollTo(newID, anchor: .top)
+                    }
+                }
             }
 
             Divider()
@@ -70,7 +108,7 @@ struct HistorySidebar: View {
                 }
                 .disabled(selectedItem == nil)
 
-                Spacer()
+                Spacer(minLength: 0)
 
                 Button("적용") {
                     if let selectedItem {
@@ -79,11 +117,16 @@ struct HistorySidebar: View {
                 }
                 .buttonStyle(.borderedProminent)
                 .disabled(selectedItem == nil)
+                .layoutPriority(1)
             }
+            .controlSize(.small)
             .padding(.horizontal, 12)
             .padding(.vertical, 10)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .background(.bar)
         }
-        .navigationTitle("\(platform.title) 히스토리")
+        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+        .clipped()
         .onChange(of: platform) { _, _ in
             selection = nil
         }
@@ -93,11 +136,8 @@ struct HistorySidebar: View {
                 selection = updated.id
             }
         }
-        .confirmationDialog(
-            "선택한 히스토리를 삭제할까요?",
-            isPresented: $showDeleteConfirm,
-            titleVisibility: .visible
-        ) {
+        .alert("선택한 히스토리를 삭제할까요?", isPresented: $showDeleteConfirm) {
+            Button("취소", role: .cancel) {}
             Button("삭제", role: .destructive) {
                 if let selectedItem {
                     let id = selectedItem.id
@@ -107,7 +147,17 @@ struct HistorySidebar: View {
                     }
                 }
             }
+        } message: {
+            Text("삭제하면 되돌릴 수 없습니다.")
+        }
+        .alert("\(platform.title) 히스토리를 모두 삭제할까요?", isPresented: $showDeleteAllConfirm) {
             Button("취소", role: .cancel) {}
+            Button("전체 삭제", role: .destructive) {
+                historyStore.deleteAll(for: platform)
+                selection = nil
+            }
+        } message: {
+            Text("히스토리만 삭제됩니다. 저장목록과 다른 데이터는 유지됩니다.")
         }
     }
 }
@@ -126,11 +176,15 @@ private struct HistoryRow: View {
             Text(item.title)
                 .font(.headline)
                 .lineLimit(2)
+                .truncationMode(.tail)
+                .frame(maxWidth: .infinity, alignment: .leading)
 
             Text(item.bundleID)
                 .font(.caption)
                 .foregroundStyle(.secondary)
                 .lineLimit(1)
+                .truncationMode(.tail)
+                .frame(maxWidth: .infinity, alignment: .leading)
 
             HStack(spacing: 6) {
                 Text(item.pushPlatform.title)
@@ -143,8 +197,31 @@ private struct HistoryRow: View {
             }
             .font(.caption2)
             .foregroundStyle(.tertiary)
+            .lineLimit(1)
+            .truncationMode(.tail)
+            .frame(maxWidth: .infinity, alignment: .leading)
         }
         .padding(.vertical, 2)
+        .frame(maxWidth: .infinity, alignment: .leading)
+    }
+}
+
+enum HistoryEditMode {
+    case history
+    case savedConfig
+
+    var navigationTitle: String {
+        switch self {
+        case .history: return "히스토리 편집"
+        case .savedConfig: return "저장목록 편집"
+        }
+    }
+
+    var nameFieldTitle: String {
+        switch self {
+        case .history: return "제목"
+        case .savedConfig: return "이름"
+        }
     }
 }
 
@@ -152,10 +229,16 @@ struct HistoryEditView: View {
     @Environment(\.dismiss) private var dismiss
 
     @State private var draft: PushHistoryItem
+    var mode: HistoryEditMode = .history
     let onSave: (PushHistoryItem) -> Void
 
-    init(item: PushHistoryItem, onSave: @escaping (PushHistoryItem) -> Void) {
+    init(
+        item: PushHistoryItem,
+        mode: HistoryEditMode = .history,
+        onSave: @escaping (PushHistoryItem) -> Void
+    ) {
         _draft = State(initialValue: item)
+        self.mode = mode
         self.onSave = onSave
     }
 
@@ -166,11 +249,20 @@ struct HistoryEditView: View {
     var body: some View {
         NavigationStack {
             Form {
-                PresetFormTextField(
-                    title: "제목",
-                    fieldKey: .title,
-                    text: $draft.title
-                )
+                if mode == .savedConfig {
+                    HStack(spacing: 6) {
+                        Text(mode.nameFieldTitle)
+                            .frame(width: 160, alignment: .leading)
+                        TextField("", text: $draft.title)
+                            .textFieldStyle(.roundedBorder)
+                    }
+                } else {
+                    PresetFormTextField(
+                        title: mode.nameFieldTitle,
+                        fieldKey: .title,
+                        text: $draft.title
+                    )
+                }
 
                 if isAndroid {
                     PresetFormTextField(
@@ -262,7 +354,7 @@ struct HistoryEditView: View {
                 }
             }
             .formStyle(.grouped)
-            .navigationTitle("히스토리 편집")
+            .navigationTitle(mode.navigationTitle)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     Button("취소") { dismiss() }
@@ -281,10 +373,10 @@ struct HistoryEditView: View {
 }
 
 #if DEBUG
-private enum HistoryPreviewData {
+enum HistoryPreviewData {
     static let sampleItem = PushHistoryItem(
         id: UUID(),
-        title: "[테스트] 텍스트 푸시",
+        title: "[테스트] 리치 푸시",
         sentAt: Date(),
         teamID: "TEAMID1234",
         bundleID: "com.example.app",
@@ -323,15 +415,19 @@ private enum HistoryPreviewData {
 }
 
 #Preview("히스토리 사이드바") {
-    NavigationSplitView {
+    HSplitView {
         HistorySidebar(
             platform: .ios,
             selection: .constant(HistoryPreviewData.sampleItem.id),
             onApply: { _ in }
         )
         .environmentObject(HistoryStore(previewItems: HistoryPreviewData.items))
-        .navigationSplitViewColumnWidth(min: 220, ideal: 280, max: 380)
-    } detail: {
+        .frame(
+            minWidth: MainLayoutMetrics.sideMin,
+            idealWidth: MainLayoutMetrics.sideIdeal,
+            maxWidth: MainLayoutMetrics.sideMax
+        )
+
         Text("메인 입력 영역")
             .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
@@ -350,4 +446,3 @@ private enum HistoryPreviewData {
         .environmentObject(CertificatePresetStore())
 }
 #endif
-

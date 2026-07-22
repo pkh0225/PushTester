@@ -25,6 +25,10 @@ enum AndroidSessionStore {
         try data.write(to: fileURL, options: .atomic)
     }
 
+    static func clearLastSession() {
+        try? FileManager.default.removeItem(at: fileURL)
+    }
+
     static func export(_ session: AndroidSession, to url: URL) throws {
         let encoder = JSONEncoder()
         encoder.outputFormatting = [.prettyPrinted, .sortedKeys]

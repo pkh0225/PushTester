@@ -29,6 +29,13 @@
 		A1B2C3D4E5F60718293A4B70 /* CertificatePresetStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1C2D3E4F5A60718293A4B71 /* CertificatePresetStore.swift */; };
 		C1D2E3F4A5B60718293A4B72 /* CertificatePresetField.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1E2F3A4B5C60718293A4B73 /* CertificatePresetField.swift */; };
 		E1F2A3B4C5D60718293A4B74 /* SessionSaveSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1A2B3C4D5E60718293A4B75 /* SessionSaveSheet.swift */; };
+		A2B3C4D5E6F70819293A4B76 /* SavedConfigStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2C3D4E5F60718293A4B77 /* SavedConfigStore.swift */; };
+		C2D3E4F5A6B70819293A4B78 /* SavedConfigView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D2E3F4A5B6C70819293A4B79 /* SavedConfigView.swift */; };
+		E2F3A4B5C6D70819293A4B7A /* MainLayoutMetrics.swift in Sources */ = {isa = PBXBuildFile; fileRef = F2A3B4C5D6E70819293A4B7B /* MainLayoutMetrics.swift */; };
+		A3B4C5D6E7F809123A4B7C /* WindowMinWidthEnforcer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3C4D5E6F7081923A4B7CD /* WindowMinWidthEnforcer.swift */; };
+		A4B5C6D7E8F901234A5B7D /* AppSettingsCatalog.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4C5D6E7F80912345A5B7E /* AppSettingsCatalog.swift */; };
+		A5B6C7D8E9F012345A5B7F /* AppDataReset.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5C6D7E8F90123456A5B80 /* AppDataReset.swift */; };
+		A6B7C8D9E0F123456A5B81 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6C7D8E9F01234567A5B82 /* SettingsView.swift */; };
 		D77B069E35D549A5B88D2FF5 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = AF9B8EA83BE8452EB758E717 /* Assets.xcassets */; };
 /* End PBXBuildFile section */
 
@@ -56,6 +63,13 @@
 		B1C2D3E4F5A60718293A4B71 /* CertificatePresetStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CertificatePresetStore.swift; sourceTree = "<group>"; };
 		D1E2F3A4B5C60718293A4B73 /* CertificatePresetField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CertificatePresetField.swift; sourceTree = "<group>"; };
 		F1A2B3C4D5E60718293A4B75 /* SessionSaveSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionSaveSheet.swift; sourceTree = "<group>"; };
+		B2C3D4E5F60718293A4B77 /* SavedConfigStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SavedConfigStore.swift; sourceTree = "<group>"; };
+		D2E3F4A5B6C70819293A4B79 /* SavedConfigView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SavedConfigView.swift; sourceTree = "<group>"; };
+		F2A3B4C5D6E70819293A4B7B /* MainLayoutMetrics.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainLayoutMetrics.swift; sourceTree = "<group>"; };
+		B3C4D5E6F7081923A4B7CD /* WindowMinWidthEnforcer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WindowMinWidthEnforcer.swift; sourceTree = "<group>"; };
+		B4C5D6E7F80912345A5B7E /* AppSettingsCatalog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppSettingsCatalog.swift; sourceTree = "<group>"; };
+		B5C6D7E8F90123456A5B80 /* AppDataReset.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDataReset.swift; sourceTree = "<group>"; };
+		B6C7D8E9F01234567A5B82 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		AF9B8EA83BE8452EB758E717 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		816E1F779D23411DAA6EC2D3 /* PushTester.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = PushTester.entitlements; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -109,6 +123,8 @@
 				012A3B4C5D6E7F809123456 /* PresetTextField.swift */,
 				D1E2F3A4B5C60718293A4B73 /* CertificatePresetField.swift */,
 				F1A2B3C4D5E60718293A4B75 /* SessionSaveSheet.swift */,
+				D2E3F4A5B6C70819293A4B79 /* SavedConfigView.swift */,
+				B6C7D8E9F01234567A5B82 /* SettingsView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -120,6 +136,8 @@
 				D5E6F708192A3B4C5D6E7F81 /* PushHistoryItem.swift */,
 				2B3C4D5E6F708192A3B4C5D /* PushPlatform.swift */,
 				4D5E6F708192A3B4C5D6E7F /* AndroidModels.swift */,
+				F2A3B4C5D6E70819293A4B7B /* MainLayoutMetrics.swift */,
+				B4C5D6E7F80912345A5B7E /* AppSettingsCatalog.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -138,6 +156,9 @@
 				E7F80912A3B4C5D6E7F80912 /* AppSupportPaths.swift */,
 				F9012A3B4C5D6E7F8091234 /* FieldPresetStore.swift */,
 				B1C2D3E4F5A60718293A4B71 /* CertificatePresetStore.swift */,
+				B2C3D4E5F60718293A4B77 /* SavedConfigStore.swift */,
+				B3C4D5E6F7081923A4B7CD /* WindowMinWidthEnforcer.swift */,
+				B5C6D7E8F90123456A5B80 /* AppDataReset.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -233,6 +254,13 @@
 				A1B2C3D4E5F60718293A4B70 /* CertificatePresetStore.swift in Sources */,
 				C1D2E3F4A5B60718293A4B72 /* CertificatePresetField.swift in Sources */,
 				E1F2A3B4C5D60718293A4B74 /* SessionSaveSheet.swift in Sources */,
+				A2B3C4D5E6F70819293A4B76 /* SavedConfigStore.swift in Sources */,
+				C2D3E4F5A6B70819293A4B78 /* SavedConfigView.swift in Sources */,
+				E2F3A4B5C6D70819293A4B7A /* MainLayoutMetrics.swift in Sources */,
+				A3B4C5D6E7F809123A4B7C /* WindowMinWidthEnforcer.swift in Sources */,
+				A4B5C6D7E8F901234A5B7D /* AppSettingsCatalog.swift in Sources */,
+				A5B6C7D8E9F012345A5B7F /* AppDataReset.swift in Sources */,
+				A6B7C8D9E0F123456A5B81 /* SettingsView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

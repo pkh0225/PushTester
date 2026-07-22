@@ -83,6 +83,11 @@ final class CertificatePresetStore: ObservableObject {
         save(items: items, for: kind)
     }
 
+    func clearAll() {
+        itemsByKind = [:]
+        persist()
+    }
+
     private func load() {
         let url = Self.fileURL
         guard FileManager.default.fileExists(atPath: url.path),
