@@ -4,6 +4,8 @@ macOS용 iOS(APNs) / Android(FCM) 푸시 테스트 앱입니다.
 
 저장소: [github.com/pkh0225/PushTester](https://github.com/pkh0225/PushTester)
 
+![PushTester 스크린샷](image1.png)
+
 ## 기능
 
 - **iOS (APNs)**
