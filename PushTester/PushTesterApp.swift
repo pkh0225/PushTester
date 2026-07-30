@@ -6,6 +6,10 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     private var preparedWindowIDs = Set<ObjectIdentifier>()
 
     func applicationWillFinishLaunching(_ notification: Notification) {
+        // TextEditor/NSTextView가 JSON의 ASCII " 를 스마트 따옴표로 바꾸지 않게 합니다.
+        UserDefaults.standard.set(false, forKey: "NSAutomaticQuoteSubstitutionEnabled")
+        UserDefaults.standard.set(false, forKey: "NSAutomaticDashSubstitutionEnabled")
+
         // 화면에 올라오기 전/직후에 프레임을 맞춰 깜빡임을 줄입니다.
         let names: [Notification.Name] = [
             Notification.Name("NSWindowWillOrderOnScreenNotification"),

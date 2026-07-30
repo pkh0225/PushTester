@@ -1,0 +1,24 @@
+{
+  "source": "/Users/pkh0225/Dev/github/PushTester/PushTester/Views/PayloadKeyControls.swift",
+  "tables": {
+    "Localizable": [
+      {
+        "comment": "",
+        "key": "현재 Payload JSON의 key 목록에서 하나를 선택합니다.",
+        "location": {
+          "startingColumn": 23,
+          "startingLine": 130
+        }
+      },
+      {
+        "comment": "",
+        "key": "유효한 JSON key 없음",
+        "location": {
+          "startingColumn": 30,
+          "startingLine": 113
+        }
+      }
+    ]
+  },
+  "version": 1
+}

@@ -27,4 +27,6 @@
 /Users/pkh0225/Dev/github/PushTester/PushTester/Models/AppSettingsCatalog.swift
 /Users/pkh0225/Dev/github/PushTester/PushTester/Services/AppDataReset.swift
 /Users/pkh0225/Dev/github/PushTester/PushTester/Views/SettingsView.swift
+/Users/pkh0225/Dev/github/PushTester/PushTester/Models/PayloadJSONKeyTools.swift
+/Users/pkh0225/Dev/github/PushTester/PushTester/Views/PayloadKeyControls.swift
 /Users/pkh0225/Dev/github/PushTester/build/Build/Intermediates.noindex/PushTester.build/Debug/PushTester.build/DerivedSources/GeneratedAssetSymbols.swift

@@ -56,6 +56,11 @@ final class PushTesterViewModel: ObservableObject {
     func sendPush(recordingInto historyStore: HistoryStore) {
         guard canSend else { return }
 
+        let normalizedPayload = JSONTextNormalizer.normalizeQuotes(payload)
+        if normalizedPayload != payload {
+            payload = normalizedPayload
+        }
+
         let sessionSnapshot = currentSession()
         let request = APNsSendRequest(
             teamID: teamID,
@@ -246,7 +251,8 @@ final class PushTesterViewModel: ObservableObject {
         environment = APNsEnvironment(rawValue: session.environment) ?? .sandbox
         priority = APNsPriority(rawValue: session.priority) ?? .immediate
         pushType = APNsPushType(rawValue: session.pushType) ?? .alert
-        payload = session.payload.isEmpty ? PayloadTemplates.alert : session.payload
+        let rawPayload = session.payload.isEmpty ? PayloadTemplates.alert : session.payload
+        payload = JSONTextNormalizer.normalizeQuotes(rawPayload)
         p8FileName = session.p8FileName.isEmpty ? "No key imported" : session.p8FileName
         p8PEM = session.p8PEM
 
@@ -267,7 +273,7 @@ struct ContentView: View {
     @EnvironmentObject private var certificatePresetStore: CertificatePresetStore
     @State private var selectedHistoryID: PushHistoryItem.ID?
     @State private var selectedSavedConfigID: PushHistoryItem.ID?
-    @State private var platform: PushPlatform = .ios
+    @AppStorage(PushPlatform.lastSelectionDefaultsKey) private var platform: PushPlatform = .ios
     @State private var showIOSSaveSheet = false
     @State private var showHistorySidebar = true
     @State private var showSavedConfigSidebar = true
@@ -456,6 +462,7 @@ struct ContentView: View {
             )
             viewModel.resetToDefaults()
             androidViewModel.resetToDefaults()
+            platform = .ios
             selectedHistoryID = nil
             selectedSavedConfigID = nil
         }
@@ -581,26 +588,33 @@ struct ContentView: View {
                     .frame(maxWidth: .infinity, alignment: .leading)
 
                     VStack(alignment: .leading, spacing: 8) {
-                        HStack {
+                        HStack(spacing: 12) {
                             Text("Payload")
                                 .font(.headline)
-                            Spacer()
+                                .frame(maxWidth: .infinity, alignment: .leading)
 
-                            Button {
-                                viewModel.sendPush(recordingInto: historyStore)
-                            } label: {
-                                Label(
-                                    viewModel.isSending ? "Sending..." : "Push Notification",
-                                    systemImage: "paperplane.circle.fill"
-                                )
+                            PayloadKeyControls(payload: $viewModel.payload) { message in
+                                viewModel.statusMessage = message
                             }
-                            .pushNotificationButtonStyle()
-                            .disabled(!viewModel.canSend)
-                            .keyboardShortcut(.return, modifiers: .command)
+
+                            HStack {
+                                Spacer(minLength: 0)
+                                Button {
+                                    viewModel.sendPush(recordingInto: historyStore)
+                                } label: {
+                                    Label(
+                                        viewModel.isSending ? "Sending..." : "Push Notification",
+                                        systemImage: "paperplane.circle.fill"
+                                    )
+                                }
+                                .pushNotificationButtonStyle()
+                                .disabled(!viewModel.canSend)
+                                .keyboardShortcut(.return, modifiers: .command)
+                            }
+                            .frame(maxWidth: .infinity, alignment: .trailing)
                         }
 
-                        TextEditor(text: $viewModel.payload)
-                            .font(.system(.body, design: .monospaced))
+                        PayloadTextEditor(text: $viewModel.payload)
                             .frame(minHeight: 260, idealHeight: 280)
                             .frame(maxWidth: .infinity)
                             .overlay(

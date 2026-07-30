@@ -15,5 +15,6 @@ enum AppDataReset {
         certificates.clearAll()
         SessionStore.clearLastSession()
         AndroidSessionStore.clearLastSession()
+        UserDefaults.standard.removeObject(forKey: PushPlatform.lastSelectionDefaultsKey)
     }
 }

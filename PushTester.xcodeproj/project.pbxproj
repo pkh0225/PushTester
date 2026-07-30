@@ -36,6 +36,9 @@
 		A4B5C6D7E8F901234A5B7D /* AppSettingsCatalog.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4C5D6E7F80912345A5B7E /* AppSettingsCatalog.swift */; };
 		A5B6C7D8E9F012345A5B7F /* AppDataReset.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5C6D7E8F90123456A5B80 /* AppDataReset.swift */; };
 		A6B7C8D9E0F123456A5B81 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6C7D8E9F01234567A5B82 /* SettingsView.swift */; };
+		C7D8E9F0A1B234567A5B83 /* PayloadJSONKeyTools.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7E8F0A1B23456789A5B84 /* PayloadJSONKeyTools.swift */; };
+		E7F8A0B1C2D345678A5B85 /* PayloadKeyControls.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7A8B0C1D2E345678A5B86 /* PayloadKeyControls.swift */; };
+		A8B9C0D1E2F345678A5B87 /* PayloadTextEditor.swift in Sources */ = {isa = PBXBuildFile; fileRef = B8C9D0E1F23456789A5B88 /* PayloadTextEditor.swift */; };
 		D77B069E35D549A5B88D2FF5 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = AF9B8EA83BE8452EB758E717 /* Assets.xcassets */; };
 /* End PBXBuildFile section */
 
@@ -70,6 +73,9 @@
 		B4C5D6E7F80912345A5B7E /* AppSettingsCatalog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppSettingsCatalog.swift; sourceTree = "<group>"; };
 		B5C6D7E8F90123456A5B80 /* AppDataReset.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDataReset.swift; sourceTree = "<group>"; };
 		B6C7D8E9F01234567A5B82 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
+		D7E8F0A1B23456789A5B84 /* PayloadJSONKeyTools.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PayloadJSONKeyTools.swift; sourceTree = "<group>"; };
+		F7A8B0C1D2E345678A5B86 /* PayloadKeyControls.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PayloadKeyControls.swift; sourceTree = "<group>"; };
+		B8C9D0E1F23456789A5B88 /* PayloadTextEditor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PayloadTextEditor.swift; sourceTree = "<group>"; };
 		AF9B8EA83BE8452EB758E717 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		816E1F779D23411DAA6EC2D3 /* PushTester.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = PushTester.entitlements; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -125,6 +131,8 @@
 				F1A2B3C4D5E60718293A4B75 /* SessionSaveSheet.swift */,
 				D2E3F4A5B6C70819293A4B79 /* SavedConfigView.swift */,
 				B6C7D8E9F01234567A5B82 /* SettingsView.swift */,
+				F7A8B0C1D2E345678A5B86 /* PayloadKeyControls.swift */,
+				B8C9D0E1F23456789A5B88 /* PayloadTextEditor.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -138,6 +146,7 @@
 				4D5E6F708192A3B4C5D6E7F /* AndroidModels.swift */,
 				F2A3B4C5D6E70819293A4B7B /* MainLayoutMetrics.swift */,
 				B4C5D6E7F80912345A5B7E /* AppSettingsCatalog.swift */,
+				D7E8F0A1B23456789A5B84 /* PayloadJSONKeyTools.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -261,6 +270,9 @@
 				A4B5C6D7E8F901234A5B7D /* AppSettingsCatalog.swift in Sources */,
 				A5B6C7D8E9F012345A5B7F /* AppDataReset.swift in Sources */,
 				A6B7C8D9E0F123456A5B81 /* SettingsView.swift in Sources */,
+				C7D8E9F0A1B234567A5B83 /* PayloadJSONKeyTools.swift in Sources */,
+				E7F8A0B1C2D345678A5B85 /* PayloadKeyControls.swift in Sources */,
+				A8B9C0D1E2F345678A5B87 /* PayloadTextEditor.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

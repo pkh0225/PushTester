@@ -47,6 +47,11 @@ final class AndroidPushViewModel: ObservableObject {
     func sendPush(recordingInto historyStore: HistoryStore) {
         guard canSend else { return }
 
+        let normalizedPayload = JSONTextNormalizer.normalizeQuotes(payload)
+        if normalizedPayload != payload {
+            payload = normalizedPayload
+        }
+
         let sessionSnapshot = currentSession()
         let request = FCMSendRequest(
             projectID: projectID,
@@ -183,7 +188,10 @@ final class AndroidPushViewModel: ObservableObject {
         projectID = session.projectID
         deviceToken = session.deviceToken
         priority = FCMPriority(rawValue: session.priority) ?? .high
-        payload = session.payload.isEmpty ? AndroidPayloadTemplates.notification : session.payload
+        let rawPayload = session.payload.isEmpty
+            ? AndroidPayloadTemplates.notification
+            : session.payload
+        payload = JSONTextNormalizer.normalizeQuotes(rawPayload)
         serviceAccountFileName = session.serviceAccountFileName.isEmpty
             ? "No JSON imported"
             : session.serviceAccountFileName
@@ -258,25 +266,33 @@ struct AndroidPushView: View {
                     .frame(maxWidth: .infinity, alignment: .leading)
 
                     VStack(alignment: .leading, spacing: 8) {
-                        HStack {
+                        HStack(spacing: 12) {
                             Text("Payload")
                                 .font(.headline)
-                            Spacer()
-                            Button {
-                                viewModel.sendPush(recordingInto: historyStore)
-                            } label: {
-                                Label(
-                                    viewModel.isSending ? "Sending..." : "Push Notification",
-                                    systemImage: "paperplane.circle.fill"
-                                )
+                                .frame(maxWidth: .infinity, alignment: .leading)
+
+                            PayloadKeyControls(payload: $viewModel.payload) { message in
+                                viewModel.statusMessage = message
                             }
-                            .pushNotificationButtonStyle()
-                            .disabled(!viewModel.canSend)
-                            .keyboardShortcut(.return, modifiers: .command)
+
+                            HStack {
+                                Spacer(minLength: 0)
+                                Button {
+                                    viewModel.sendPush(recordingInto: historyStore)
+                                } label: {
+                                    Label(
+                                        viewModel.isSending ? "Sending..." : "Push Notification",
+                                        systemImage: "paperplane.circle.fill"
+                                    )
+                                }
+                                .pushNotificationButtonStyle()
+                                .disabled(!viewModel.canSend)
+                                .keyboardShortcut(.return, modifiers: .command)
+                            }
+                            .frame(maxWidth: .infinity, alignment: .trailing)
                         }
 
-                        TextEditor(text: $viewModel.payload)
-                            .font(.system(.body, design: .monospaced))
+                        PayloadTextEditor(text: $viewModel.payload)
                             .frame(minHeight: 260, idealHeight: 280)
                             .frame(maxWidth: .infinity)
                             .overlay(

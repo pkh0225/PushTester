@@ -1,4 +1,5 @@
 import SwiftUI
+import AppKit
 
 /// 앱 설정 시트. `AppSettingsCatalog`에 항목을 추가하면 목록이 확장됩니다.
 struct SettingsView: View {
@@ -11,6 +12,22 @@ struct SettingsView: View {
     var body: some View {
         NavigationStack {
             List {
+                Section("앱 정보") {
+                    appInfoHeader
+
+                    LabeledContent("버전", value: appVersionText)
+                    LabeledContent("플랫폼", value: "macOS")
+                    LabeledContent("GitHub") {
+                        Link("github.com/pkh0225/PushTester", destination: appRepositoryURL)
+                            .font(.body)
+                    }
+                    Text("APNs(iOS) · FCM(Android) 푸시 알림을 빠르게 보내 보고 검증하는 개발용 도구입니다.")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                        .fixedSize(horizontal: false, vertical: true)
+                        .padding(.vertical, 2)
+                }
+
                 ForEach(AppSettingsCatalog.sections) { section in
                     Section(section.title) {
                         ForEach(section.items) { item in
@@ -31,7 +48,7 @@ struct SettingsView: View {
                 }
             }
         }
-        .frame(minWidth: 420, idealWidth: 440, minHeight: 280, idealHeight: 320)
+        .frame(minWidth: 420, idealWidth: 440, minHeight: 320, idealHeight: 380)
         .alert(
             pendingDestructiveItem?.title ?? "확인",
             isPresented: Binding(
@@ -52,6 +69,43 @@ struct SettingsView: View {
         } message: {
             Text(pendingDestructiveItem?.subtitle ?? "")
         }
+    }
+
+    private var appInfoHeader: some View {
+        HStack(spacing: 12) {
+            Image(nsImage: NSApp.applicationIconImage)
+                .resizable()
+                .interpolation(.high)
+                .frame(width: 48, height: 48)
+                .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
+
+            VStack(alignment: .leading, spacing: 2) {
+                Text(appDisplayName)
+                    .font(.headline)
+                Text("Push Notification Tester")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            }
+
+            Spacer(minLength: 0)
+        }
+        .padding(.vertical, 4)
+    }
+
+    private var appDisplayName: String {
+        (Bundle.main.object(forInfoDictionaryKey: "CFBundleDisplayName") as? String)
+            ?? (Bundle.main.object(forInfoDictionaryKey: "CFBundleName") as? String)
+            ?? "PushTester"
+    }
+
+    private var appVersionText: String {
+        let version = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "-"
+        let build = Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion") as? String ?? "-"
+        return "\(version) (\(build))"
+    }
+
+    private var appRepositoryURL: URL {
+        URL(string: "https://github.com/pkh0225/PushTester")!
     }
 
     private func handleTap(_ item: AppSettingsItem) {

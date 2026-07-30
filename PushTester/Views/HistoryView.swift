@@ -343,9 +343,7 @@ struct HistoryEditView: View {
                 VStack(alignment: .leading, spacing: 8) {
                     Text("Payload")
                         .foregroundStyle(.secondary)
-                    TextEditor(text: $draft.payload)
-                        .font(.system(.body, design: .monospaced))
-                        .multilineTextAlignment(.leading)
+                    PayloadTextEditor(text: $draft.payload)
                         .frame(maxWidth: .infinity, minHeight: 180, alignment: .leading)
                         .overlay(
                             RoundedRectangle(cornerRadius: 6)
