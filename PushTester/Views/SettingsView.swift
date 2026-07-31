@@ -1,12 +1,36 @@
 import SwiftUI
 import AppKit
 
+private struct SettingsContentHeightKey: PreferenceKey {
+    static var defaultValue: CGFloat = 0
+    static func reduce(value: inout CGFloat, nextValue: () -> CGFloat) {
+        value = max(value, nextValue())
+    }
+}
+
 /// 앱 설정 패널. `AppSettingsCatalog`에 항목을 추가하면 목록이 확장됩니다.
 struct SettingsView: View {
     @EnvironmentObject private var appAlertCenter: AppAlertCenter
 
     var onSelect: (AppSettingsItemID) -> Void
     var onClose: () -> Void
+    /// 메인 창을 넘지 않도록 오버레이에서 넘기는 상한
+    var maxHeight: CGFloat
+
+    @State private var contentHeight: CGFloat = 0
+
+    private let panelWidth: CGFloat = 440
+    private let headerHeight: CGFloat = 49
+
+    private var panelHeight: CGFloat {
+        let fitting = contentHeight + headerHeight
+        guard fitting > 0 else { return min(360, maxHeight) }
+        return min(fitting, maxHeight)
+    }
+
+    private var needsScroll: Bool {
+        contentHeight + headerHeight > maxHeight + 0.5
+    }
 
     var body: some View {
         VStack(spacing: 0) {
@@ -22,42 +46,55 @@ struct SettingsView: View {
             }
             .padding(.horizontal, 16)
             .padding(.vertical, 12)
+            .frame(height: headerHeight)
 
             Divider()
 
-            List {
-                Section("앱 정보") {
-                    appInfoHeader
+            ScrollView {
+                VStack(alignment: .leading, spacing: 20) {
+                    settingsSection("앱 정보") {
+                        appInfoHeader
 
-                    LabeledContent("버전", value: appVersionText)
-                    LabeledContent("플랫폼", value: "macOS")
-                    LabeledContent("GitHub") {
-                        Link("github.com/pkh0225/PushTester", destination: appRepositoryURL)
-                            .font(.body)
+                        LabeledContent("버전", value: appVersionText)
+                        LabeledContent("플랫폼", value: "macOS")
+                        LabeledContent("GitHub") {
+                            Link("github.com/pkh0225/PushTester", destination: appRepositoryURL)
+                                .font(.body)
+                        }
+                        Text("APNs(iOS) · FCM(Android) 푸시 알림을 빠르게 보내 보고 검증하는 개발용 도구입니다.")
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                            .fixedSize(horizontal: false, vertical: true)
+                            .padding(.vertical, 2)
                     }
-                    Text("APNs(iOS) · FCM(Android) 푸시 알림을 빠르게 보내 보고 검증하는 개발용 도구입니다.")
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
-                        .fixedSize(horizontal: false, vertical: true)
-                        .padding(.vertical, 2)
-                }
 
-                ForEach(AppSettingsCatalog.sections) { section in
-                    Section(section.title) {
-                        ForEach(section.items) { item in
-                            Button {
-                                handleTap(item)
-                            } label: {
-                                settingsRow(item)
+                    ForEach(AppSettingsCatalog.sections) { section in
+                        settingsSection(section.title) {
+                            ForEach(section.items) { item in
+                                Button {
+                                    handleTap(item)
+                                } label: {
+                                    settingsRow(item)
+                                }
+                                .buttonStyle(.plain)
                             }
-                            .buttonStyle(.plain)
                         }
                     }
                 }
+                .padding(16)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .background(
+                    GeometryReader { proxy in
+                        Color.clear.preference(
+                            key: SettingsContentHeightKey.self,
+                            value: proxy.size.height
+                        )
+                    }
+                )
             }
-            .listStyle(.inset)
+            .scrollDisabled(!needsScroll)
         }
-        .frame(width: Self.panelSize.width, height: Self.panelSize.height)
+        .frame(width: panelWidth, height: panelHeight, alignment: .top)
         .background(Color(nsColor: .windowBackgroundColor))
         .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
         .overlay(
@@ -65,9 +102,22 @@ struct SettingsView: View {
                 .stroke(Color.secondary.opacity(0.25), lineWidth: 1)
         )
         .shadow(color: .black.opacity(0.35), radius: 24, y: 10)
+        .onPreferenceChange(SettingsContentHeightKey.self) { contentHeight = $0 }
     }
 
-    private static let panelSize = CGSize(width: 440, height: 420)
+    @ViewBuilder
+    private func settingsSection<Content: View>(
+        _ title: String,
+        @ViewBuilder content: () -> Content
+    ) -> some View {
+        VStack(alignment: .leading, spacing: 10) {
+            Text(title)
+                .font(.subheadline.weight(.semibold))
+                .foregroundStyle(.secondary)
+            content()
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+    }
 
     private var appInfoHeader: some View {
         HStack(spacing: 12) {
@@ -107,8 +157,10 @@ struct SettingsView: View {
     }
 
     private func handleTap(_ item: AppSettingsItem) {
-        switch item.role {
-        case .destructive:
+        switch item.id {
+        case .checkForUpdate:
+            AppUpdateChecker.checkFromSettings(using: appAlertCenter)
+        case .resetAllData:
             appAlertCenter.confirm(
                 title: item.title,
                 message: item.subtitle,
@@ -118,8 +170,6 @@ struct SettingsView: View {
                 onSelect(item.id)
                 onClose()
             }
-        case .normal:
-            onSelect(item.id)
         }
     }
 
@@ -157,17 +207,23 @@ struct SettingsOverlay: ViewModifier {
         content
             .overlay {
                 if isPresented {
-                    ZStack {
-                        Color.black.opacity(0.45)
-                            .ignoresSafeArea()
-                            .onTapGesture {
-                                isPresented = false
-                            }
+                    GeometryReader { proxy in
+                        let maxHeight = max(proxy.size.height * 0.9, 240)
 
-                        SettingsView(
-                            onSelect: onSelect,
-                            onClose: { isPresented = false }
-                        )
+                        ZStack {
+                            Color.black.opacity(0.45)
+                                .ignoresSafeArea()
+                                .onTapGesture {
+                                    isPresented = false
+                                }
+
+                            SettingsView(
+                                onSelect: onSelect,
+                                onClose: { isPresented = false },
+                                maxHeight: maxHeight
+                            )
+                        }
+                        .frame(width: proxy.size.width, height: proxy.size.height)
                     }
                     .transition(.opacity)
                     .zIndex(2000)
@@ -187,6 +243,6 @@ extension View {
 }
 
 #Preview {
-    SettingsView(onSelect: { _ in }, onClose: {})
+    SettingsView(onSelect: { _ in }, onClose: {}, maxHeight: 700)
         .environmentObject(AppAlertCenter())
 }

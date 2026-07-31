@@ -2,7 +2,6 @@ import Foundation
 import AppKit
 
 /// GitHub Releases 최신 태그와 앱 버전을 비교해 업데이트를 안내합니다.
-/// 네트워크 실패·타임아웃·파싱 실패는 조용히 무시합니다.
 enum AppUpdateChecker {
     static let repositoryOwner = "pkh0225"
     static let repositoryName = "PushTester"
@@ -19,49 +18,87 @@ enum AppUpdateChecker {
         let pageURL: URL
     }
 
-    static func checkAndPrompt(using alertCenter: AppAlertCenter) {
-        Task {
-            guard let update = await fetchAvailableUpdate() else { return }
-            await MainActor.run {
-                alertCenter.confirm(
-                    title: "새 버전 안내",
-                    message: """
-                    GitHub에 새 버전 \(update.remoteVersion)이 있습니다.
-                    현재 버전: \(update.localVersion)
+    private enum CheckResult {
+        case updateAvailable(AvailableUpdate)
+        case upToDate(local: String, remote: String)
+        case unavailable
+    }
 
-                    GitHub 릴리즈에서 다시 받아 설치해 주세요.
-                    """,
-                    cancelTitle: "나중에",
-                    confirmTitle: "GitHub에서 받기",
-                    isDestructive: false
-                ) {
-                    NSWorkspace.shared.open(update.pageURL)
+    /// 앱 시작 시: 새 버전이 있을 때만 안내합니다. 실패/최신은 무시합니다.
+    static func checkAndPrompt(using alertCenter: AppAlertCenter) {
+        check(using: alertCenter, reportWhenCurrentOrFailed: false)
+    }
+
+    /// 설정에서 수동 확인: 최신/실패도 결과를 보여 줍니다.
+    static func checkFromSettings(using alertCenter: AppAlertCenter) {
+        check(using: alertCenter, reportWhenCurrentOrFailed: true)
+    }
+
+    private static func check(
+        using alertCenter: AppAlertCenter,
+        reportWhenCurrentOrFailed: Bool
+    ) {
+        Task {
+            let result = await performCheck()
+            await MainActor.run {
+                switch result {
+                case .updateAvailable(let update):
+                    alertCenter.confirm(
+                        title: "새 버전 안내",
+                        message: """
+                        GitHub에 새 버전 \(update.remoteVersion)이 있습니다.
+                        현재 버전: \(update.localVersion)
+
+                        GitHub 릴리즈에서 다시 받아 설치해 주세요.
+                        """,
+                        cancelTitle: "나중에",
+                        confirmTitle: "GitHub에서 받기",
+                        isDestructive: false
+                    ) {
+                        NSWorkspace.shared.open(update.pageURL)
+                    }
+                case .upToDate(let local, let remote):
+                    guard reportWhenCurrentOrFailed else { return }
+                    alertCenter.notice(
+                        title: "최신 버전입니다",
+                        message: "현재 버전 \(local) · GitHub 최신 \(remote)"
+                    )
+                case .unavailable:
+                    guard reportWhenCurrentOrFailed else { return }
+                    alertCenter.notice(
+                        title: "확인하지 못했습니다",
+                        message: "네트워크 상태를 확인한 뒤 다시 시도해 주세요."
+                    )
                 }
             }
         }
     }
 
-    private static func fetchAvailableUpdate() async -> AvailableUpdate? {
+    private static func performCheck() async -> CheckResult {
         guard let localString = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String,
               let localVersion = AppVersion(string: localString) else {
-            return nil
+            return .unavailable
         }
 
         do {
             guard let pageURL = try await resolveLatestReleaseURL(),
                   let tagName = tagName(from: pageURL),
-                  let remoteVersion = AppVersion(string: tagName),
-                  localVersion < remoteVersion else {
-                return nil
+                  let remoteVersion = AppVersion(string: tagName) else {
+                return .unavailable
             }
 
-            return AvailableUpdate(
-                localVersion: localString,
-                remoteVersion: tagName,
-                pageURL: pageURL
-            )
+            if localVersion < remoteVersion {
+                return .updateAvailable(
+                    AvailableUpdate(
+                        localVersion: localString,
+                        remoteVersion: tagName,
+                        pageURL: pageURL
+                    )
+                )
+            }
+            return .upToDate(local: localString, remote: tagName)
         } catch {
-            return nil
+            return .unavailable
         }
     }
 

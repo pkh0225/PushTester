@@ -2,12 +2,14 @@ import Foundation
 
 /// 설정 화면 섹션. 새 설정 그룹을 추가할 때 case를 늘리면 됩니다.
 enum AppSettingsSectionID: String, CaseIterable, Identifiable {
+    case update
     case data
 
     var id: String { rawValue }
 
     var title: String {
         switch self {
+        case .update: return "업데이트"
         case .data: return "데이터"
         }
     }
@@ -15,6 +17,7 @@ enum AppSettingsSectionID: String, CaseIterable, Identifiable {
 
 /// 설정 항목 식별자. 새 기능을 넣을 때 case와 카탈로그 항목을 추가합니다.
 enum AppSettingsItemID: String, Identifiable {
+    case checkForUpdate
     case resetAllData
 
     var id: String { rawValue }
@@ -53,6 +56,17 @@ enum AppSettingsCatalog {
 
     static func items(in section: AppSettingsSectionID) -> [AppSettingsItem] {
         switch section {
+        case .update:
+            return [
+                AppSettingsItem(
+                    id: .checkForUpdate,
+                    section: .update,
+                    title: "업데이트 확인",
+                    subtitle: "GitHub 최신 릴리즈와 현재 앱 버전을 비교합니다.",
+                    systemImage: "arrow.triangle.2.circlepath",
+                    role: .normal
+                )
+            ]
         case .data:
             return [
                 AppSettingsItem(
