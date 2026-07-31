@@ -94,3 +94,45 @@ struct PayloadTextEditor: NSViewRepresentable {
         }
     }
 }
+
+/// Payload 에디터 우상단 JSON 유효성 배지
+struct PayloadJSONStatusBadge: View {
+    let payload: String
+
+    private var check: PayloadJSONValidator.CheckResult {
+        PayloadJSONValidator.check(payload)
+    }
+
+    var body: some View {
+        Text(check.isValid ? "JSON 유효" : "JSON 오류")
+            .font(.caption.weight(.semibold))
+            .foregroundStyle(check.isValid ? Color.green : Color.red)
+            .padding(.horizontal, 8)
+            .padding(.vertical, 4)
+            .background(
+                Color(nsColor: .windowBackgroundColor).opacity(0.92),
+                in: RoundedRectangle(cornerRadius: 6, style: .continuous)
+            )
+            .overlay(
+                RoundedRectangle(cornerRadius: 6, style: .continuous)
+                    .stroke(Color.secondary.opacity(0.28), lineWidth: 1)
+            )
+            .help(check.message)
+            .lineLimit(1)
+            .allowsHitTesting(false)
+    }
+}
+
+extension View {
+    /// 테두리 + 우상단 JSON 상태 오버레이
+    func payloadEditorChrome(payload: String, cornerRadius: CGFloat = 8) -> some View {
+        overlay(
+            RoundedRectangle(cornerRadius: cornerRadius)
+                .stroke(Color.secondary.opacity(0.35), lineWidth: 1)
+        )
+        .overlay(alignment: .topTrailing) {
+            PayloadJSONStatusBadge(payload: payload)
+                .padding(8)
+        }
+    }
+}

@@ -7,12 +7,14 @@ enum AppDataReset {
         history: HistoryStore,
         savedConfigs: SavedConfigStore,
         fieldPresets: FieldPresetStore,
-        certificates: CertificatePresetStore
+        certificates: CertificatePresetStore,
+        payloadTemplates: PayloadTemplateStore
     ) {
         history.clearAll()
         savedConfigs.clearAll()
         fieldPresets.clearAll()
         certificates.clearAll()
+        payloadTemplates.clearAll()
         SessionStore.clearLastSession()
         AndroidSessionStore.clearLastSession()
         UserDefaults.standard.removeObject(forKey: PushPlatform.lastSelectionDefaultsKey)

@@ -12,6 +12,9 @@ struct FCMSendResult {
     let statusCode: Int
     let messageName: String?
     let body: String
+    let headersText: String
+    let succeeded: Bool
+    let errorMessage: String?
 }
 
 enum FCMClientError: LocalizedError {
@@ -80,14 +83,23 @@ enum FCMClient {
         let body = String(data: data, encoding: .utf8) ?? ""
         let object = (try? JSONSerialization.jsonObject(with: data)) as? [String: Any]
         let messageName = object?["name"] as? String
+        let headersText = HTTPResponseFormatting.headersText(from: http)
         let succeeded = (200..<300).contains(http.statusCode)
 
+        var errorMessage: String?
         if !succeeded {
             let message = parseError(from: object) ?? body
-            throw FCMClientError.httpError("FCM 오류 (HTTP \(http.statusCode)): \(message)")
+            errorMessage = "FCM 오류 (HTTP \(http.statusCode)): \(message)"
         }
 
-        return FCMSendResult(statusCode: http.statusCode, messageName: messageName, body: body)
+        return FCMSendResult(
+            statusCode: http.statusCode,
+            messageName: messageName,
+            body: body,
+            headersText: headersText,
+            succeeded: succeeded,
+            errorMessage: errorMessage
+        )
     }
 
     private static func buildMessageObject(request: FCMSendRequest) throws -> [String: Any] {

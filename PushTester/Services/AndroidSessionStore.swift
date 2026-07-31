@@ -29,11 +29,14 @@ enum AndroidSessionStore {
         try? FileManager.default.removeItem(at: fileURL)
     }
 
-    static func export(_ session: AndroidSession, to url: URL) throws {
+    static func encode(_ session: AndroidSession) throws -> Data {
         let encoder = JSONEncoder()
         encoder.outputFormatting = [.prettyPrinted, .sortedKeys]
-        let data = try encoder.encode(session)
-        try data.write(to: url, options: .atomic)
+        return try encoder.encode(session)
+    }
+
+    static func export(_ session: AndroidSession, to url: URL) throws {
+        try encode(session).write(to: url, options: .atomic)
     }
 
     static func `import`(from url: URL) throws -> AndroidSession {

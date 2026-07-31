@@ -17,6 +17,10 @@ struct PushHistoryItem: Codable, Identifiable, Equatable {
     var p8PEM: String
     var apnsID: String?
     var statusCode: Int?
+    /// 응답 헤더 (줄 단위 `Key: Value`)
+    var responseHeaders: String?
+    /// 응답 바디 (원문 또는 pretty JSON)
+    var responseBody: String?
 
     var pushPlatform: PushPlatform {
         PushPlatform(rawValue: platform) ?? .ios
@@ -75,9 +79,21 @@ struct PushHistoryItem: Codable, Identifiable, Equatable {
         return "\(token.prefix(6))…\(token.suffix(6))"
     }
 
+    var hasResponseDetail: Bool {
+        let headers = responseHeaders?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
+        let body = responseBody?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
+        return (statusCode ?? 0) > 0 || !headers.isEmpty || !body.isEmpty
+    }
+
+    var statusCodeDisplay: String? {
+        guard let statusCode, statusCode > 0 else { return nil }
+        return "HTTP \(statusCode)"
+    }
+
     enum CodingKeys: String, CodingKey {
         case id, platform, title, sentAt, teamID, bundleID, keyID, deviceToken
         case environment, priority, pushType, payload, p8FileName, p8PEM, apnsID, statusCode
+        case responseHeaders, responseBody
     }
 
     init(
@@ -96,7 +112,9 @@ struct PushHistoryItem: Codable, Identifiable, Equatable {
         p8FileName: String,
         p8PEM: String,
         apnsID: String?,
-        statusCode: Int?
+        statusCode: Int?,
+        responseHeaders: String? = nil,
+        responseBody: String? = nil
     ) {
         self.id = id
         self.platform = platform
@@ -114,6 +132,8 @@ struct PushHistoryItem: Codable, Identifiable, Equatable {
         self.p8PEM = p8PEM
         self.apnsID = apnsID
         self.statusCode = statusCode
+        self.responseHeaders = responseHeaders
+        self.responseBody = responseBody
     }
 
     init(from decoder: Decoder) throws {
@@ -134,12 +154,16 @@ struct PushHistoryItem: Codable, Identifiable, Equatable {
         p8PEM = try container.decode(String.self, forKey: .p8PEM)
         apnsID = try container.decodeIfPresent(String.self, forKey: .apnsID)
         statusCode = try container.decodeIfPresent(Int.self, forKey: .statusCode)
+        responseHeaders = try container.decodeIfPresent(String.self, forKey: .responseHeaders)
+        responseBody = try container.decodeIfPresent(String.self, forKey: .responseBody)
     }
 
     static func make(
         from session: PushSession,
         apnsID: String?,
         statusCode: Int,
+        responseHeaders: String? = nil,
+        responseBody: String? = nil,
         sentAt: Date = Date()
     ) -> PushHistoryItem {
         PushHistoryItem(
@@ -158,7 +182,9 @@ struct PushHistoryItem: Codable, Identifiable, Equatable {
             p8FileName: session.p8FileName,
             p8PEM: session.p8PEM,
             apnsID: apnsID,
-            statusCode: statusCode
+            statusCode: statusCode,
+            responseHeaders: responseHeaders,
+            responseBody: responseBody
         )
     }
 
@@ -193,6 +219,8 @@ struct PushHistoryItem: Codable, Identifiable, Equatable {
         from session: AndroidSession,
         messageName: String?,
         statusCode: Int,
+        responseHeaders: String? = nil,
+        responseBody: String? = nil,
         sentAt: Date = Date()
     ) -> PushHistoryItem {
         let priority = FCMPriority(rawValue: session.priority) ?? .high
@@ -212,7 +240,9 @@ struct PushHistoryItem: Codable, Identifiable, Equatable {
             p8FileName: session.serviceAccountFileName,
             p8PEM: session.serviceAccountJSON,
             apnsID: messageName,
-            statusCode: statusCode
+            statusCode: statusCode,
+            responseHeaders: responseHeaders,
+            responseBody: responseBody
         )
     }
 

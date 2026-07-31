@@ -1,6 +1,7 @@
 import SwiftUI
 import AppKit
 import Combine
+import UniformTypeIdentifiers
 
 @MainActor
 final class PushTesterViewModel: ObservableObject {
@@ -53,7 +54,7 @@ final class PushTesterViewModel: ObservableObject {
         statusMessage = "Push Type → \(newType.displayName) (payload template updated)"
     }
 
-    func sendPush(recordingInto historyStore: HistoryStore) {
+    func sendPush(recordingInto historyStore: HistoryStore, tokens: [String]? = nil) {
         guard canSend else { return }
 
         let normalizedPayload = JSONTextNormalizer.normalizeQuotes(payload)
@@ -61,41 +62,89 @@ final class PushTesterViewModel: ObservableObject {
             payload = normalizedPayload
         }
 
-        let sessionSnapshot = currentSession()
-        let request = APNsSendRequest(
-            teamID: teamID,
-            keyID: keyID,
-            bundleID: bundleID,
-            deviceToken: deviceToken,
-            p8PEM: p8PEM,
-            environment: environment,
-            priority: priority,
-            pushType: pushType,
-            payload: payload
-        )
+        let jsonCheck = PayloadJSONValidator.check(payload)
+        guard jsonCheck.isValid else {
+            statusMessage = "Payload JSON 오류: \(jsonCheck.message)"
+            return
+        }
+
+        let targetTokens = Self.normalizedTokens(tokens ?? [deviceToken])
+        guard !targetTokens.isEmpty else {
+            statusMessage = "Device Token이 비어 있습니다."
+            return
+        }
 
         isSending = true
-        statusMessage = "Sending..."
+        statusMessage = targetTokens.count == 1 ? "Sending..." : "Sending \(targetTokens.count) tokens..."
         persistLastSession()
 
         Task {
-            do {
-                let result = try await APNsClient.send(request)
-                historyStore.addSuccess(
-                    session: sessionSnapshot,
-                    apnsID: result.apnsID,
-                    statusCode: result.statusCode
+            var successCount = 0
+            var lastSuccessMessage = ""
+            var failures: [String] = []
+
+            for token in targetTokens {
+                var sessionSnapshot = currentSession()
+                sessionSnapshot.deviceToken = token
+                let request = APNsSendRequest(
+                    teamID: teamID,
+                    keyID: keyID,
+                    bundleID: bundleID,
+                    deviceToken: token,
+                    p8PEM: p8PEM,
+                    environment: environment,
+                    priority: priority,
+                    pushType: pushType,
+                    payload: payload
                 )
-                if let apnsID = result.apnsID, !apnsID.isEmpty {
-                    statusMessage = "Success (HTTP \(result.statusCode)) · apns-id: \(apnsID)"
-                } else {
-                    statusMessage = "Success (HTTP \(result.statusCode))"
+
+                do {
+                    let result = try await APNsClient.send(request)
+                    historyStore.addSuccess(
+                        session: sessionSnapshot,
+                        apnsID: result.apnsID,
+                        statusCode: result.statusCode,
+                        responseHeaders: result.headersText,
+                        responseBody: HTTPResponseFormatting.prettyBody(result.body)
+                    )
+                    if result.succeeded {
+                        successCount += 1
+                        if let apnsID = result.apnsID, !apnsID.isEmpty {
+                            lastSuccessMessage = "Success (HTTP \(result.statusCode)) · apns-id: \(apnsID)"
+                        } else {
+                            lastSuccessMessage = "Success (HTTP \(result.statusCode))"
+                        }
+                    } else {
+                        let short = token.count > 12 ? "\(token.prefix(8))…" : token
+                        failures.append("\(short): \(result.errorMessage ?? "HTTP \(result.statusCode)")")
+                    }
+                } catch {
+                    let short = token.count > 12 ? "\(token.prefix(8))…" : token
+                    failures.append("\(short): \(error.localizedDescription)")
                 }
-            } catch {
-                statusMessage = error.localizedDescription
+            }
+
+            if targetTokens.count == 1 {
+                statusMessage = failures.first ?? lastSuccessMessage
+            } else if failures.isEmpty {
+                statusMessage = "Success \(successCount)/\(targetTokens.count) tokens"
+            } else {
+                statusMessage = "Success \(successCount)/\(targetTokens.count) · 실패 \(failures.count) · \(failures[0])"
             }
             isSending = false
         }
+    }
+
+    private static func normalizedTokens(_ tokens: [String]) -> [String] {
+        var seen = Set<String>()
+        var result: [String] = []
+        for raw in tokens {
+            let token = raw.trimmingCharacters(in: .whitespacesAndNewlines)
+            guard !token.isEmpty, !seen.contains(token) else { continue }
+            seen.insert(token)
+            result.append(token)
+        }
+        return result
     }
 
     func applyHistory(_ item: PushHistoryItem) {
@@ -127,7 +176,16 @@ final class PushTesterViewModel: ObservableObject {
         statusMessage = "저장 설정 적용: \(item.title)"
     }
 
-    func exportSession(to url: URL) {
+    func makeExportData() throws -> Data {
+        try SessionStore.encode(currentSession())
+    }
+
+    func markExported(to url: URL) {
+        persistLastSession()
+        statusMessage = "Saved: \(url.lastPathComponent)"
+    }
+
+    func importSession(from url: URL) {
         let accessed = url.startAccessingSecurityScopedResource()
         defer {
             if accessed {
@@ -136,43 +194,12 @@ final class PushTesterViewModel: ObservableObject {
         }
 
         do {
-            try SessionStore.export(currentSession(), to: url)
+            let session = try SessionStore.import(from: url)
+            apply(session)
             persistLastSession()
-            statusMessage = "Saved: \(url.lastPathComponent)"
+            statusMessage = "Loaded: \(url.lastPathComponent)"
         } catch {
             statusMessage = error.localizedDescription
-        }
-    }
-
-    func loadSessionFromFile() {
-        let panel = NSOpenPanel()
-        panel.allowsMultipleSelection = false
-        panel.canChooseDirectories = false
-        panel.canChooseFiles = true
-        panel.allowedContentTypes = [.json]
-        panel.title = "설정 불러오기"
-        panel.prompt = "불러오기"
-
-        panel.begin { [weak self] response in
-            guard response == .OK, let url = panel.url else { return }
-            Task { @MainActor in
-                guard let self else { return }
-                let accessed = url.startAccessingSecurityScopedResource()
-                defer {
-                    if accessed {
-                        url.stopAccessingSecurityScopedResource()
-                    }
-                }
-
-                do {
-                    let session = try SessionStore.import(from: url)
-                    self.apply(session)
-                    self.persistLastSession()
-                    self.statusMessage = "Loaded: \(url.lastPathComponent)"
-                } catch {
-                    self.statusMessage = error.localizedDescription
-                }
-            }
         }
     }
 
@@ -271,13 +298,21 @@ struct ContentView: View {
     @EnvironmentObject private var savedConfigStore: SavedConfigStore
     @EnvironmentObject private var fieldPresetStore: FieldPresetStore
     @EnvironmentObject private var certificatePresetStore: CertificatePresetStore
+    @EnvironmentObject private var payloadTemplateStore: PayloadTemplateStore
+    @EnvironmentObject private var appAlertCenter: AppAlertCenter
     @State private var selectedHistoryID: PushHistoryItem.ID?
     @State private var selectedSavedConfigID: PushHistoryItem.ID?
     @AppStorage(PushPlatform.lastSelectionDefaultsKey) private var platform: PushPlatform = .ios
-    @State private var showIOSSaveSheet = false
     @State private var showHistorySidebar = true
     @State private var showSavedConfigSidebar = true
     @State private var showSettings = false
+    @State private var responseHistoryItem: PushHistoryItem?
+    @State private var showSavedConfigAdd = false
+    @State private var savedConfigAddTitle = ""
+    @State private var savedConfigRevealID: PushHistoryItem.ID?
+    @State private var isExportingSession = false
+    @State private var isImportingSession = false
+    @State private var sessionExportDocument: JSONFileDocument?
 
     private let labelWidth: CGFloat = 110
 
@@ -296,10 +331,14 @@ struct ContentView: View {
             if showHistorySidebar {
                 HistorySidebar(
                     platform: platform,
-                    selection: $selectedHistoryID
-                ) { item in
-                    applyHistoryItem(item)
-                }
+                    selection: $selectedHistoryID,
+                    onApply: { item in
+                        applyHistoryItem(item)
+                    },
+                    onShowResponse: { item in
+                        responseHistoryItem = item
+                    }
+                )
                 .frame(
                     minWidth: MainLayoutMetrics.sideMin,
                     idealWidth: MainLayoutMetrics.sideIdeal,
@@ -315,14 +354,9 @@ struct ContentView: View {
                 SavedConfigSidebar(
                     platform: platform,
                     selection: $selectedSavedConfigID,
-                    makeItem: { title in
-                        switch platform {
-                        case .ios:
-                            return viewModel.makeSavedConfig(title: title)
-                        case .android:
-                            return androidViewModel.makeSavedConfig(title: title)
-                        }
-                    },
+                    showAddOverlay: $showSavedConfigAdd,
+                    addTitle: $savedConfigAddTitle,
+                    revealID: $savedConfigRevealID,
                     onApply: { item in
                         applySavedConfigItem(item)
                     }
@@ -369,10 +403,38 @@ struct ContentView: View {
                 .help(showSavedConfigSidebar ? "저장목록 접기" : "저장목록 펼치기")
             }
         }
-        .sheet(isPresented: $showSettings) {
-            SettingsView { itemID in
-                handleSettingsAction(itemID)
+        .settingsOverlay(isPresented: $showSettings) { itemID in
+            handleSettingsAction(itemID)
+        }
+        .savedConfigNameOverlay(
+            isPresented: $showSavedConfigAdd,
+            title: $savedConfigAddTitle
+        ) {
+            let item: PushHistoryItem
+            switch platform {
+            case .ios:
+                item = viewModel.makeSavedConfig(title: savedConfigAddTitle)
+            case .android:
+                item = androidViewModel.makeSavedConfig(title: savedConfigAddTitle)
             }
+            savedConfigStore.add(item)
+            savedConfigRevealID = item.id
+        }
+        .historyResponseDetailOverlay(item: $responseHistoryItem)
+        .fileExporter(
+            isPresented: $isExportingSession,
+            document: sessionExportDocument,
+            contentType: .json,
+            defaultFilename: sessionExportDefaultFilename
+        ) { result in
+            handleSessionExportResult(result)
+        }
+        .fileImporter(
+            isPresented: $isImportingSession,
+            allowedContentTypes: [.json],
+            allowsMultipleSelection: false
+        ) { result in
+            handleSessionImportResult(result)
         }
         .onChange(of: platform) { _, _ in
             selectedHistoryID = nil
@@ -437,7 +499,11 @@ struct ContentView: View {
                 case .ios:
                     iosDetailContent
                 case .android:
-                    AndroidPushView(viewModel: androidViewModel)
+                    AndroidPushView(
+                        viewModel: androidViewModel,
+                        onRequestFileSave: { presentSessionExporter() },
+                        onRequestFileLoad: { isImportingSession = true }
+                    )
                 }
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -451,6 +517,79 @@ struct ContentView: View {
         }
     }
 
+    private var sessionExportDefaultFilename: String {
+        platform == .ios ? "PushTester-session.json" : "PushTester-android-session.json"
+    }
+
+    private func presentSessionExporter() {
+        do {
+            let data: Data
+            switch platform {
+            case .ios:
+                data = try viewModel.makeExportData()
+            case .android:
+                data = try androidViewModel.makeExportData()
+            }
+            sessionExportDocument = JSONFileDocument(data: data)
+            isExportingSession = true
+        } catch {
+            switch platform {
+            case .ios:
+                viewModel.statusMessage = error.localizedDescription
+            case .android:
+                androidViewModel.statusMessage = error.localizedDescription
+            }
+        }
+    }
+
+    private func handleSessionExportResult(_ result: Result<URL, Error>) {
+        switch result {
+        case .success(let url):
+            switch platform {
+            case .ios:
+                viewModel.markExported(to: url)
+            case .android:
+                androidViewModel.markExported(to: url)
+            }
+        case .failure(let error):
+            // 사용자가 취소한 경우는 메시지를 남기지 않습니다.
+            let nsError = error as NSError
+            if nsError.domain == NSCocoaErrorDomain, nsError.code == NSUserCancelledError {
+                return
+            }
+            switch platform {
+            case .ios:
+                viewModel.statusMessage = error.localizedDescription
+            case .android:
+                androidViewModel.statusMessage = error.localizedDescription
+            }
+        }
+    }
+
+    private func handleSessionImportResult(_ result: Result<[URL], Error>) {
+        switch result {
+        case .success(let urls):
+            guard let url = urls.first else { return }
+            switch platform {
+            case .ios:
+                viewModel.importSession(from: url)
+            case .android:
+                androidViewModel.importSession(from: url)
+            }
+        case .failure(let error):
+            let nsError = error as NSError
+            if nsError.domain == NSCocoaErrorDomain, nsError.code == NSUserCancelledError {
+                return
+            }
+            switch platform {
+            case .ios:
+                viewModel.statusMessage = error.localizedDescription
+            case .android:
+                androidViewModel.statusMessage = error.localizedDescription
+            }
+        }
+    }
+
     private func handleSettingsAction(_ itemID: AppSettingsItemID) {
         switch itemID {
         case .resetAllData:
@@ -458,7 +597,8 @@ struct ContentView: View {
                 history: historyStore,
                 savedConfigs: savedConfigStore,
                 fieldPresets: fieldPresetStore,
-                certificates: certificatePresetStore
+                certificates: certificatePresetStore,
+                payloadTemplates: payloadTemplateStore
             )
             viewModel.resetToDefaults()
             androidViewModel.resetToDefaults()
@@ -588,39 +728,42 @@ struct ContentView: View {
                     .frame(maxWidth: .infinity, alignment: .leading)
 
                     VStack(alignment: .leading, spacing: 8) {
-                        HStack(spacing: 12) {
+                        HStack(alignment: .center, spacing: 12) {
                             Text("Payload")
                                 .font(.headline)
-                                .frame(maxWidth: .infinity, alignment: .leading)
+                            Spacer(minLength: 0)
+                            PushSendControls(
+                                isSending: viewModel.isSending,
+                                canSend: viewModel.canSend,
+                                presetTokens: fieldPresetStore.values(for: .deviceToken),
+                                onSendCurrent: {
+                                    viewModel.sendPush(recordingInto: historyStore)
+                                },
+                                onSendPresets: { tokens in
+                                    viewModel.sendPush(recordingInto: historyStore, tokens: tokens)
+                                }
+                            )
+                        }
+
+                        HStack(alignment: .center, spacing: 12) {
+                            PayloadTemplateControls(
+                                platform: .ios,
+                                payload: $viewModel.payload
+                            ) { message in
+                                viewModel.statusMessage = message
+                            }
 
                             PayloadKeyControls(payload: $viewModel.payload) { message in
                                 viewModel.statusMessage = message
                             }
 
-                            HStack {
-                                Spacer(minLength: 0)
-                                Button {
-                                    viewModel.sendPush(recordingInto: historyStore)
-                                } label: {
-                                    Label(
-                                        viewModel.isSending ? "Sending..." : "Push Notification",
-                                        systemImage: "paperplane.circle.fill"
-                                    )
-                                }
-                                .pushNotificationButtonStyle()
-                                .disabled(!viewModel.canSend)
-                                .keyboardShortcut(.return, modifiers: .command)
-                            }
-                            .frame(maxWidth: .infinity, alignment: .trailing)
+                            Spacer(minLength: 0)
                         }
 
                         PayloadTextEditor(text: $viewModel.payload)
                             .frame(minHeight: 260, idealHeight: 280)
                             .frame(maxWidth: .infinity)
-                            .overlay(
-                                RoundedRectangle(cornerRadius: 8)
-                                    .stroke(Color.secondary.opacity(0.35), lineWidth: 1)
-                            )
+                            .payloadEditorChrome(payload: viewModel.payload)
                     }
                     .padding(16)
                     .frame(maxWidth: .infinity, alignment: .leading)
@@ -644,12 +787,12 @@ struct ContentView: View {
                     .foregroundStyle(.secondary)
 
                 Button("불러오기") {
-                    viewModel.loadSessionFromFile()
+                    isImportingSession = true
                 }
                 .keyboardShortcut("o", modifiers: .command)
 
                 Button("저장") {
-                    showIOSSaveSheet = true
+                    presentSessionExporter()
                 }
                 .keyboardShortcut("s", modifiers: .command)
             }
@@ -658,14 +801,6 @@ struct ContentView: View {
             .background(Color(nsColor: .windowBackgroundColor))
         }
         .background(Color(nsColor: .windowBackgroundColor))
-        .sheet(isPresented: $showIOSSaveSheet) {
-            SessionSaveSheet(
-                title: "설정 저장",
-                defaultFileName: "PushTester-session.json"
-            ) { url in
-                viewModel.exportSession(to: url)
-            }
-        }
     }
 
     private func formLabel(_ title: String) -> some View {

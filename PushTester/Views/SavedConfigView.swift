@@ -4,18 +4,16 @@ import AppKit
 /// 메인 화면 오른쪽 스플릿 — 앱 내에 저장한 설정 목록
 struct SavedConfigSidebar: View {
     @EnvironmentObject private var savedConfigStore: SavedConfigStore
+    @EnvironmentObject private var appAlertCenter: AppAlertCenter
 
     var platform: PushPlatform
     @Binding var selection: PushHistoryItem.ID?
-    var makeItem: (String) -> PushHistoryItem
+    @Binding var showAddOverlay: Bool
+    @Binding var addTitle: String
+    @Binding var revealID: PushHistoryItem.ID?
     var onApply: (PushHistoryItem) -> Void
 
     @State private var editingItem: PushHistoryItem?
-    @State private var showDeleteConfirm = false
-    @State private var showAddSheet = false
-    @State private var newTitle = ""
-    /// 시트 닫힌 뒤에 선택·스크롤을 적용해 List 첫 행이 헤더에 가려지지 않게 합니다.
-    @State private var pendingRevealID: PushHistoryItem.ID?
 
     private var filteredItems: [PushHistoryItem] {
         savedConfigStore.items(for: platform)
@@ -44,8 +42,8 @@ struct SavedConfigSidebar: View {
                 }
                 Spacer(minLength: 0)
                 Button {
-                    newTitle = suggestedTitle
-                    showAddSheet = true
+                    addTitle = suggestedTitle
+                    showAddOverlay = true
                 } label: {
                     Image(systemName: "plus")
                         .font(.system(size: 13, weight: .bold))
@@ -88,7 +86,7 @@ struct SavedConfigSidebar: View {
                                     Divider()
                                     Button("삭제", role: .destructive) {
                                         selection = item.id
-                                        showDeleteConfirm = true
+                                        confirmDeleteSelected()
                                     }
                                 }
                         }
@@ -98,12 +96,12 @@ struct SavedConfigSidebar: View {
                     }
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
-                .onChange(of: showAddSheet) { _, isPresented in
-                    guard !isPresented, let id = pendingRevealID else { return }
+                .onChange(of: revealID) { _, id in
+                    guard let id else { return }
                     selection = id
                     DispatchQueue.main.async {
                         proxy.scrollTo(id, anchor: .top)
-                        pendingRevealID = nil
+                        revealID = nil
                     }
                 }
             }
@@ -117,7 +115,7 @@ struct SavedConfigSidebar: View {
                 .disabled(selectedItem == nil)
 
                 Button("삭제", role: .destructive) {
-                    showDeleteConfirm = true
+                    confirmDeleteSelected()
                 }
                 .disabled(selectedItem == nil)
 
@@ -143,32 +141,30 @@ struct SavedConfigSidebar: View {
         .onChange(of: platform) { _, _ in
             selection = nil
         }
-        .sheet(isPresented: $showAddSheet) {
-            SavedConfigNameSheet(title: $newTitle) {
-                let item = makeItem(newTitle)
-                savedConfigStore.add(item)
-                pendingRevealID = item.id
-            }
-        }
         .sheet(item: $editingItem) { item in
             HistoryEditView(item: item, mode: .savedConfig) { updated in
                 savedConfigStore.update(updated)
                 selection = updated.id
             }
+            .environmentObject(appAlertCenter)
+            .appAlertOverlay(using: appAlertCenter)
         }
-        .alert("선택한 저장 항목을 삭제할까요?", isPresented: $showDeleteConfirm) {
-            Button("취소", role: .cancel) {}
-            Button("삭제", role: .destructive) {
-                if let selectedItem {
-                    let id = selectedItem.id
-                    savedConfigStore.delete(id: id)
-                    if selection == id {
-                        selection = nil
-                    }
+    }
+
+    private func confirmDeleteSelected() {
+        appAlertCenter.confirm(
+            title: "선택한 저장 항목을 삭제할까요?",
+            message: "삭제하면 되돌릴 수 없습니다.",
+            confirmTitle: "삭제",
+            isDestructive: true
+        ) {
+            if let selectedItem {
+                let id = selectedItem.id
+                savedConfigStore.delete(id: id)
+                if selection == id {
+                    selection = nil
                 }
             }
-        } message: {
-            Text("삭제하면 되돌릴 수 없습니다.")
         }
     }
 }
@@ -215,11 +211,11 @@ private struct SavedConfigRow: View {
     }
 }
 
-private struct SavedConfigNameSheet: View {
+/// 설정 저장 이름 입력 패널 (가운데 오버레이용)
+struct SavedConfigNamePanel: View {
     @Binding var title: String
     var onSave: () -> Void
-
-    @Environment(\.dismiss) private var dismiss
+    var onCancel: () -> Void
 
     var body: some View {
         VStack(alignment: .leading, spacing: 14) {
@@ -235,43 +231,80 @@ private struct SavedConfigNameSheet: View {
                 .onSubmit(save)
 
             HStack {
-                Spacer()
-                Button("취소") { dismiss() }
+                Spacer(minLength: 0)
+                Button("취소", action: onCancel)
                     .keyboardShortcut(.cancelAction)
-                Button("저장") { save() }
+                Button("저장", action: save)
                     .buttonStyle(.borderedProminent)
                     .keyboardShortcut(.defaultAction)
                     .disabled(title.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
             }
         }
-        .padding(16)
-        .frame(width: 340, height: 150)
-        .background(SavedConfigSheetSizer(size: CGSize(width: 340, height: 150)))
+        .padding(20)
+        .frame(width: 360)
+        .background(Color(nsColor: .windowBackgroundColor))
+        .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
+        .overlay(
+            RoundedRectangle(cornerRadius: 12, style: .continuous)
+                .stroke(Color.secondary.opacity(0.25), lineWidth: 1)
+        )
+        .shadow(color: .black.opacity(0.35), radius: 24, y: 10)
     }
 
     private func save() {
         guard !title.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else { return }
         onSave()
-        dismiss()
     }
 }
 
-private struct SavedConfigSheetSizer: NSViewRepresentable {
-    let size: CGSize
+/// 메인 창 가운데에 설정 저장을 띄우는 딤드 오버레이
+struct SavedConfigNameOverlay: ViewModifier {
+    @Binding var isPresented: Bool
+    @Binding var title: String
+    var onSave: () -> Void
 
-    func makeNSView(context: Context) -> NSView {
-        let view = NSView()
-        DispatchQueue.main.async { apply(to: view) }
-        return view
+    func body(content: Content) -> some View {
+        content
+            .overlay {
+                if isPresented {
+                    ZStack {
+                        Color.black.opacity(0.45)
+                            .ignoresSafeArea()
+                            .onTapGesture {
+                                isPresented = false
+                            }
+
+                        SavedConfigNamePanel(
+                            title: $title,
+                            onSave: {
+                                onSave()
+                                isPresented = false
+                            },
+                            onCancel: {
+                                isPresented = false
+                            }
+                        )
+                    }
+                    .transition(.opacity)
+                    .zIndex(2000)
+                }
+            }
+            .animation(.easeInOut(duration: 0.15), value: isPresented)
     }
+}
 
-    func updateNSView(_ nsView: NSView, context: Context) {
-        DispatchQueue.main.async { apply(to: nsView) }
-    }
-
-    private func apply(to view: NSView) {
-        guard let window = view.window else { return }
-        window.styleMask.remove(.resizable)
-        window.setContentSize(size)
+extension View {
+    func savedConfigNameOverlay(
+        isPresented: Binding<Bool>,
+        title: Binding<String>,
+        onSave: @escaping () -> Void
+    ) -> some View {
+        modifier(
+            SavedConfigNameOverlay(
+                isPresented: isPresented,
+                title: title,
+                onSave: onSave
+            )
+        )
     }
 }

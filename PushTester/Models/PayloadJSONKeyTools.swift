@@ -278,6 +278,25 @@ enum PayloadJSONKeyTools {
     }
 }
 
+enum PayloadJSONValidator {
+    struct CheckResult {
+        let isValid: Bool
+        let message: String
+    }
+
+    /// 전송 시와 같이 스마트 따옴표를 정규화한 뒤 JSON 유효성을 검사합니다.
+    static func check(_ text: String) -> CheckResult {
+        let normalized = JSONTextNormalizer.normalizeQuotes(text)
+        let data = Data(normalized.utf8)
+        do {
+            _ = try JSONSerialization.jsonObject(with: data)
+            return CheckResult(isValid: true, message: "유효한 JSON입니다.")
+        } catch {
+            return CheckResult(isValid: false, message: error.localizedDescription)
+        }
+    }
+}
+
 /// 웹에서 복사한 스마트 따옴표 등을 JSON용 ASCII 따옴표로 정규화합니다.
 /// 편집 중에는 적용하지 않고, Push 전송 직전에만 사용합니다(한글 IME 커서 점프 방지).
 enum JSONTextNormalizer {

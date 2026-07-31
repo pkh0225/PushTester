@@ -3,14 +3,14 @@ import SwiftUI
 /// 메인 화면 왼쪽 스플릿에 표시되는 히스토리 목록
 struct HistorySidebar: View {
     @EnvironmentObject private var historyStore: HistoryStore
+    @EnvironmentObject private var appAlertCenter: AppAlertCenter
 
     var platform: PushPlatform
     @Binding var selection: PushHistoryItem.ID?
     var onApply: (PushHistoryItem) -> Void
+    var onShowResponse: (PushHistoryItem) -> Void = { _ in }
 
     @State private var editingItem: PushHistoryItem?
-    @State private var showDeleteConfirm = false
-    @State private var showDeleteAllConfirm = false
 
     private var filteredItems: [PushHistoryItem] {
         historyStore.items(for: platform)
@@ -33,7 +33,7 @@ struct HistorySidebar: View {
                 }
                 Spacer(minLength: 0)
                 Button {
-                    showDeleteAllConfirm = true
+                    confirmDeleteAll()
                 } label: {
                     Image(systemName: "trash")
                         .font(.system(size: 12, weight: .semibold))
@@ -57,7 +57,7 @@ struct HistorySidebar: View {
                         ContentUnavailableView(
                             "히스토리 없음",
                             systemImage: "clock",
-                            description: Text("\(platform.title) 푸시 발송에 성공하면\n여기에 기록됩니다.")
+                            description: Text("\(platform.title) 푸시를 보내면\n여기에 기록됩니다.")
                         )
                     } else {
                         List(filteredItems, selection: $selection) { item in
@@ -73,10 +73,15 @@ struct HistorySidebar: View {
                                     Button("편집") {
                                         editingItem = item
                                     }
+                                    if item.hasResponseDetail {
+                                        Button("응답 상세") {
+                                            onShowResponse(item)
+                                        }
+                                    }
                                     Divider()
                                     Button("삭제", role: .destructive) {
                                         selection = item.id
-                                        showDeleteConfirm = true
+                                        confirmDeleteSelected()
                                     }
                                 }
                         }
@@ -104,7 +109,7 @@ struct HistorySidebar: View {
                 .disabled(selectedItem == nil)
 
                 Button("삭제", role: .destructive) {
-                    showDeleteConfirm = true
+                    confirmDeleteSelected()
                 }
                 .disabled(selectedItem == nil)
 
@@ -135,29 +140,37 @@ struct HistorySidebar: View {
                 historyStore.update(updated)
                 selection = updated.id
             }
+            .environmentObject(appAlertCenter)
+            .appAlertOverlay(using: appAlertCenter)
         }
-        .alert("선택한 히스토리를 삭제할까요?", isPresented: $showDeleteConfirm) {
-            Button("취소", role: .cancel) {}
-            Button("삭제", role: .destructive) {
-                if let selectedItem {
-                    let id = selectedItem.id
-                    historyStore.delete(id: id)
-                    if selection == id {
-                        selection = nil
-                    }
+    }
+
+    private func confirmDeleteSelected() {
+        appAlertCenter.confirm(
+            title: "선택한 히스토리를 삭제할까요?",
+            message: "삭제하면 되돌릴 수 없습니다.",
+            confirmTitle: "삭제",
+            isDestructive: true
+        ) {
+            if let selectedItem {
+                let id = selectedItem.id
+                historyStore.delete(id: id)
+                if selection == id {
+                    selection = nil
                 }
             }
-        } message: {
-            Text("삭제하면 되돌릴 수 없습니다.")
         }
-        .alert("\(platform.title) 히스토리를 모두 삭제할까요?", isPresented: $showDeleteAllConfirm) {
-            Button("취소", role: .cancel) {}
-            Button("전체 삭제", role: .destructive) {
-                historyStore.deleteAll(for: platform)
-                selection = nil
-            }
-        } message: {
-            Text("히스토리만 삭제됩니다. 저장목록과 다른 데이터는 유지됩니다.")
+    }
+
+    private func confirmDeleteAll() {
+        appAlertCenter.confirm(
+            title: "\(platform.title) 히스토리를 모두 삭제할까요?",
+            message: "히스토리만 삭제됩니다. 저장목록과 다른 데이터는 유지됩니다.",
+            confirmTitle: "전체 삭제",
+            isDestructive: true
+        ) {
+            historyStore.deleteAll(for: platform)
+            selection = nil
         }
     }
 }
@@ -194,6 +207,11 @@ private struct HistoryRow: View {
                 Text(item.environmentDisplay)
                 Text("·")
                 Text(item.pushTypeDisplay)
+                if let code = item.statusCodeDisplay {
+                    Text("·")
+                    Text(code)
+                        .foregroundStyle(statusColor(for: item.statusCode))
+                }
             }
             .font(.caption2)
             .foregroundStyle(.tertiary)
@@ -203,6 +221,11 @@ private struct HistoryRow: View {
         }
         .padding(.vertical, 2)
         .frame(maxWidth: .infinity, alignment: .leading)
+    }
+
+    private func statusColor(for code: Int?) -> Color {
+        guard let code else { return .secondary }
+        return (200..<300).contains(code) ? .green : .orange
     }
 }
 
@@ -345,10 +368,7 @@ struct HistoryEditView: View {
                         .foregroundStyle(.secondary)
                     PayloadTextEditor(text: $draft.payload)
                         .frame(maxWidth: .infinity, minHeight: 180, alignment: .leading)
-                        .overlay(
-                            RoundedRectangle(cornerRadius: 6)
-                                .stroke(Color.secondary.opacity(0.35), lineWidth: 1)
-                        )
+                        .payloadEditorChrome(payload: draft.payload, cornerRadius: 6)
                 }
             }
             .formStyle(.grouped)
@@ -420,6 +440,7 @@ enum HistoryPreviewData {
             onApply: { _ in }
         )
         .environmentObject(HistoryStore(previewItems: HistoryPreviewData.items))
+        .environmentObject(AppAlertCenter())
         .frame(
             minWidth: MainLayoutMetrics.sideMin,
             idealWidth: MainLayoutMetrics.sideIdeal,
@@ -435,6 +456,7 @@ enum HistoryPreviewData {
 #Preview("히스토리 비어 있음") {
     HistorySidebar(platform: .ios, selection: .constant(nil), onApply: { _ in })
         .environmentObject(HistoryStore(previewItems: []))
+        .environmentObject(AppAlertCenter())
         .frame(width: 280, height: 640)
 }
 
@@ -442,5 +464,6 @@ enum HistoryPreviewData {
     HistoryEditView(item: HistoryPreviewData.sampleItem, onSave: { _ in })
         .environmentObject(FieldPresetStore())
         .environmentObject(CertificatePresetStore())
+        .environmentObject(AppAlertCenter())
 }
 #endif

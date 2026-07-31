@@ -71,6 +71,15 @@ enum SessionStore {
         try? FileManager.default.removeItem(at: lastSessionURL)
     }
 
+    static func encode(_ session: PushSession) throws -> Data {
+        let encoder = JSONEncoder()
+        encoder.outputFormatting = [.prettyPrinted, .sortedKeys]
+        guard let data = try? encoder.encode(session) else {
+            throw SessionStoreError.encodeFailed
+        }
+        return data
+    }
+
     static func export(_ session: PushSession, to url: URL) throws {
         try write(session, to: url)
     }
@@ -80,13 +89,10 @@ enum SessionStore {
     }
 
     private static func write(_ session: PushSession, to url: URL) throws {
-        let encoder = JSONEncoder()
-        encoder.outputFormatting = [.prettyPrinted, .sortedKeys]
-        guard let data = try? encoder.encode(session) else {
-            throw SessionStoreError.encodeFailed
-        }
         do {
-            try data.write(to: url, options: .atomic)
+            try encode(session).write(to: url, options: .atomic)
+        } catch let error as SessionStoreError {
+            throw error
         } catch {
             throw SessionStoreError.writeFailed(error.localizedDescription)
         }

@@ -81,6 +81,8 @@ struct PushTesterApp: App {
     @StateObject private var savedConfigStore = SavedConfigStore()
     @StateObject private var fieldPresetStore = FieldPresetStore()
     @StateObject private var certificatePresetStore = CertificatePresetStore()
+    @StateObject private var payloadTemplateStore = PayloadTemplateStore()
+    @StateObject private var appAlertCenter = AppAlertCenter()
 
     private var launchSize: CGSize {
         if let frame = WindowFrameStore.load() {
@@ -96,6 +98,9 @@ struct PushTesterApp: App {
                 .environmentObject(savedConfigStore)
                 .environmentObject(fieldPresetStore)
                 .environmentObject(certificatePresetStore)
+                .environmentObject(payloadTemplateStore)
+                .environmentObject(appAlertCenter)
+                .appAlertOverlay(using: appAlertCenter)
                 // 너비 하한은 WindowMinWidthEnforcer가 패널 펼침 상태에 맞게 갱신합니다.
                 .frame(minHeight: MainLayoutMetrics.windowMinHeight)
                 .background(WindowFrameAutosave(name: WindowFrameStore.mainWindowName))

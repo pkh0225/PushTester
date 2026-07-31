@@ -16,7 +16,9 @@ struct APNsSendResult {
     let statusCode: Int
     let apnsID: String?
     let body: String
+    let headersText: String
     let succeeded: Bool
+    let errorMessage: String?
 }
 
 enum APNsClientError: LocalizedError {
@@ -103,29 +105,31 @@ enum APNsClient {
 
         let body = String(data: data, encoding: .utf8) ?? ""
         let apnsID = http.value(forHTTPHeaderField: "apns-id")
+        let headersText = HTTPResponseFormatting.headersText(from: http)
         let succeeded = (200..<300).contains(http.statusCode)
 
+        var errorMessage: String?
         if !succeeded {
             let reason = parseReason(from: body) ?? body
-            let message: String
             if reason == "TooManyProviderTokenUpdates" {
-                message = """
+                errorMessage = """
                 APNs 오류 (HTTP \(http.statusCode)): TooManyProviderTokenUpdates
                 인증 JWT를 너무 자주 갱신해서 일시적으로 거부된 상태입니다. 잠시 후 다시 시도해 주세요.
                 """
             } else if reason.isEmpty {
-                message = "APNs 오류 (HTTP \(http.statusCode))"
+                errorMessage = "APNs 오류 (HTTP \(http.statusCode))"
             } else {
-                message = "APNs 오류 (HTTP \(http.statusCode)): \(reason)"
+                errorMessage = "APNs 오류 (HTTP \(http.statusCode)): \(reason)"
             }
-            throw APNsClientError.httpError(message)
         }
 
         return APNsSendResult(
             statusCode: http.statusCode,
             apnsID: apnsID,
             body: body,
-            succeeded: succeeded
+            headersText: headersText,
+            succeeded: succeeded,
+            errorMessage: errorMessage
         )
     }
 

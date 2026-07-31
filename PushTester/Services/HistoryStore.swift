@@ -28,24 +28,32 @@ final class HistoryStore: ObservableObject {
     func addSuccess(
         session: PushSession,
         apnsID: String?,
-        statusCode: Int
+        statusCode: Int,
+        responseHeaders: String? = nil,
+        responseBody: String? = nil
     ) {
         insert(PushHistoryItem.make(
             from: session,
             apnsID: apnsID,
-            statusCode: statusCode
+            statusCode: statusCode,
+            responseHeaders: responseHeaders,
+            responseBody: responseBody
         ))
     }
 
     func addAndroidSuccess(
         session: AndroidSession,
         messageName: String?,
-        statusCode: Int
+        statusCode: Int,
+        responseHeaders: String? = nil,
+        responseBody: String? = nil
     ) {
         insert(PushHistoryItem.makeAndroid(
             from: session,
             messageName: messageName,
-            statusCode: statusCode
+            statusCode: statusCode,
+            responseHeaders: responseHeaders,
+            responseBody: responseBody
         ))
     }
 

@@ -11,8 +11,8 @@ struct CertificatePresetField: View {
     var onApply: (CertificatePresetItem) -> Void
 
     @EnvironmentObject private var certificateStore: CertificatePresetStore
+    @EnvironmentObject private var appAlertCenter: AppAlertCenter
     @State private var showEditor = false
-    @State private var importError: String?
 
     private var presets: [CertificatePresetItem] {
         certificateStore.items(for: kind)
@@ -91,19 +91,12 @@ struct CertificatePresetField: View {
                 }
             }
         }
-        .alert("가져오기 실패", isPresented: Binding(
-            get: { importError != nil },
-            set: { if !$0 { importError = nil } }
-        )) {
-            Button("확인", role: .cancel) { importError = nil }
-        } message: {
-            Text(importError ?? "")
-        }
     }
 
     private func importCertificate() {
         let store = certificateStore
         let apply = onApply
+        let alerts = appAlertCenter
         CertificateFileImporter.pick(kind: kind) { result in
             switch result {
             case .success(let item):
@@ -111,7 +104,10 @@ struct CertificatePresetField: View {
                 apply(item)
             case .failure(let error):
                 if case CertificateImportError.cancelled = error { return }
-                importError = error.localizedDescription
+                alerts.notice(
+                    title: "가져오기 실패",
+                    message: error.localizedDescription
+                )
             }
         }
     }
@@ -125,6 +121,7 @@ struct CertificatePresetFormField: View {
     var onApply: (CertificatePresetItem) -> Void
 
     @EnvironmentObject private var certificateStore: CertificatePresetStore
+    @EnvironmentObject private var appAlertCenter: AppAlertCenter
     @State private var showEditor = false
 
     private var presets: [CertificatePresetItem] {
@@ -154,6 +151,7 @@ struct CertificatePresetFormField: View {
                                 // 히스토리 편집에서는 Import 버튼이 없어 여기서 직접 추가
                                 let store = certificateStore
                                 let apply = onApply
+                                let alerts = appAlertCenter
                                 CertificateFileImporter.pick(kind: kind) { result in
                                     switch result {
                                     case .success(let item):
@@ -161,12 +159,10 @@ struct CertificatePresetFormField: View {
                                         apply(item)
                                     case .failure(let error):
                                         if case CertificateImportError.cancelled = error { return }
-                                        let alert = NSAlert()
-                                        alert.messageText = "추가 실패"
-                                        alert.informativeText = error.localizedDescription ?? ""
-                                        alert.alertStyle = .warning
-                                        alert.addButton(withTitle: "확인")
-                                        alert.runModal()
+                                        alerts.notice(
+                                            title: "추가 실패",
+                                            message: error.localizedDescription
+                                        )
                                     }
                                 }
                             }

@@ -59,7 +59,7 @@ enum AppSettingsCatalog {
                     id: .resetAllData,
                     section: .data,
                     title: "전체 데이터 초기화",
-                    subtitle: "히스토리, 저장목록, 프리셋, 마지막 세션을 모두 삭제합니다.",
+                    subtitle: "히스토리, 저장목록, 프리셋, Payload 템플릿, 마지막 세션을 모두 삭제합니다.",
                     systemImage: "trash",
                     role: .destructive
                 )

@@ -1,16 +1,30 @@
 import SwiftUI
 import AppKit
 
-/// 앱 설정 시트. `AppSettingsCatalog`에 항목을 추가하면 목록이 확장됩니다.
+/// 앱 설정 패널. `AppSettingsCatalog`에 항목을 추가하면 목록이 확장됩니다.
 struct SettingsView: View {
-    @Environment(\.dismiss) private var dismiss
+    @EnvironmentObject private var appAlertCenter: AppAlertCenter
 
     var onSelect: (AppSettingsItemID) -> Void
-
-    @State private var pendingDestructiveItem: AppSettingsItem?
+    var onClose: () -> Void
 
     var body: some View {
-        NavigationStack {
+        VStack(spacing: 0) {
+            HStack {
+                Text("설정")
+                    .font(.headline)
+                Spacer()
+                Button("닫기") {
+                    onClose()
+                }
+                .keyboardShortcut(.cancelAction)
+                .controlSize(.small)
+            }
+            .padding(.horizontal, 16)
+            .padding(.vertical, 12)
+
+            Divider()
+
             List {
                 Section("앱 정보") {
                     appInfoHeader
@@ -41,35 +55,19 @@ struct SettingsView: View {
                     }
                 }
             }
-            .navigationTitle("설정")
-            .toolbar {
-                ToolbarItem(placement: .cancellationAction) {
-                    Button("닫기") { dismiss() }
-                }
-            }
+            .listStyle(.inset)
         }
-        .frame(minWidth: 420, idealWidth: 440, minHeight: 320, idealHeight: 380)
-        .alert(
-            pendingDestructiveItem?.title ?? "확인",
-            isPresented: Binding(
-                get: { pendingDestructiveItem != nil },
-                set: { if !$0 { pendingDestructiveItem = nil } }
-            )
-        ) {
-            Button("취소", role: .cancel) {
-                pendingDestructiveItem = nil
-            }
-            Button("초기화", role: .destructive) {
-                if let item = pendingDestructiveItem {
-                    onSelect(item.id)
-                }
-                pendingDestructiveItem = nil
-                dismiss()
-            }
-        } message: {
-            Text(pendingDestructiveItem?.subtitle ?? "")
-        }
+        .frame(width: Self.panelSize.width, height: Self.panelSize.height)
+        .background(Color(nsColor: .windowBackgroundColor))
+        .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
+        .overlay(
+            RoundedRectangle(cornerRadius: 12, style: .continuous)
+                .stroke(Color.secondary.opacity(0.25), lineWidth: 1)
+        )
+        .shadow(color: .black.opacity(0.35), radius: 24, y: 10)
     }
+
+    private static let panelSize = CGSize(width: 440, height: 420)
 
     private var appInfoHeader: some View {
         HStack(spacing: 12) {
@@ -111,7 +109,15 @@ struct SettingsView: View {
     private func handleTap(_ item: AppSettingsItem) {
         switch item.role {
         case .destructive:
-            pendingDestructiveItem = item
+            appAlertCenter.confirm(
+                title: item.title,
+                message: item.subtitle,
+                confirmTitle: "초기화",
+                isDestructive: true
+            ) {
+                onSelect(item.id)
+                onClose()
+            }
         case .normal:
             onSelect(item.id)
         }
@@ -142,6 +148,45 @@ struct SettingsView: View {
     }
 }
 
+/// 메인 창 가운데에 설정을 띄우는 딤드 오버레이
+struct SettingsOverlay: ViewModifier {
+    @Binding var isPresented: Bool
+    var onSelect: (AppSettingsItemID) -> Void
+
+    func body(content: Content) -> some View {
+        content
+            .overlay {
+                if isPresented {
+                    ZStack {
+                        Color.black.opacity(0.45)
+                            .ignoresSafeArea()
+                            .onTapGesture {
+                                isPresented = false
+                            }
+
+                        SettingsView(
+                            onSelect: onSelect,
+                            onClose: { isPresented = false }
+                        )
+                    }
+                    .transition(.opacity)
+                    .zIndex(2000)
+                }
+            }
+            .animation(.easeInOut(duration: 0.15), value: isPresented)
+    }
+}
+
+extension View {
+    func settingsOverlay(
+        isPresented: Binding<Bool>,
+        onSelect: @escaping (AppSettingsItemID) -> Void
+    ) -> some View {
+        modifier(SettingsOverlay(isPresented: isPresented, onSelect: onSelect))
+    }
+}
+
 #Preview {
-    SettingsView(onSelect: { _ in })
+    SettingsView(onSelect: { _ in }, onClose: {})
+        .environmentObject(AppAlertCenter())
 }
