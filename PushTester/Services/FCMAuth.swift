@@ -67,34 +67,42 @@ struct GoogleServiceAccount: Equatable {
 
 enum FCMAuth {
     private static let scope = "https://www.googleapis.com/auth/firebase.messaging"
-    private static let tokenMaxAge: TimeInterval = 50 * 60
-    private static let lock = NSLock()
-    private static var cache: [String: CachedToken] = [:]
+    private static let tokenCache = AccessTokenCache()
 
-    private struct CachedToken {
+    private struct CachedToken: Sendable {
         let accessToken: String
         let createdAt: Date
+    }
+
+    /// async 컨텍스트에서 NSLock 대신 쓰는 토큰 캐시
+    private actor AccessTokenCache {
+        private let tokenMaxAge: TimeInterval = 50 * 60
+        private var storage: [String: CachedToken] = [:]
+
+        func token(for key: String) -> String? {
+            guard let cached = storage[key],
+                  Date().timeIntervalSince(cached.createdAt) < tokenMaxAge else {
+                return nil
+            }
+            return cached.accessToken
+        }
+
+        func store(_ accessToken: String, for key: String) {
+            storage[key] = CachedToken(accessToken: accessToken, createdAt: Date())
+        }
     }
 
     static func accessToken(serviceAccountJSON: String) async throws -> (accessToken: String, projectID: String) {
         let account = try GoogleServiceAccount.parse(from: serviceAccountJSON)
         let cacheKey = account.clientEmail
 
-        lock.lock()
-        if let cached = cache[cacheKey],
-           Date().timeIntervalSince(cached.createdAt) < tokenMaxAge {
-            let token = cached.accessToken
-            lock.unlock()
-            return (token, account.projectID)
+        if let cached = await tokenCache.token(for: cacheKey) {
+            return (cached, account.projectID)
         }
-        lock.unlock()
 
         let jwt = try makeJWT(account: account)
         let accessToken = try await exchangeJWTForAccessToken(jwt, tokenURI: account.tokenURI)
-
-        lock.lock()
-        cache[cacheKey] = CachedToken(accessToken: accessToken, createdAt: Date())
-        lock.unlock()
+        await tokenCache.store(accessToken, for: cacheKey)
 
         return (accessToken, account.projectID)
     }
