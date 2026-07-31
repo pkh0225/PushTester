@@ -313,6 +313,7 @@ struct ContentView: View {
     @State private var isExportingSession = false
     @State private var isImportingSession = false
     @State private var sessionExportDocument: JSONFileDocument?
+    @State private var didCheckForUpdate = false
 
     private let labelWidth: CGFloat = 110
 
@@ -449,6 +450,9 @@ struct ContentView: View {
         .background(WindowMinWidthEnforcer(minWidth: effectiveWindowMinWidth))
         .onAppear {
             enforceWindowMinWidth()
+            guard !didCheckForUpdate else { return }
+            didCheckForUpdate = true
+            AppUpdateChecker.checkAndPrompt(using: appAlertCenter)
         }
     }
 
