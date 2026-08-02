@@ -14,8 +14,12 @@ final class AppAlertCenter: ObservableObject {
         let isDestructive: Bool
         /// false면 확인 버튼만 표시 (단순 알림)
         let showsCancel: Bool
+        /// nil이면 체크박스 숨김
+        let checkboxTitle: String?
         let onConfirm: () -> Void
         let onCancel: () -> Void
+        /// 체크박스가 있을 때 닫기 직전에 체크 여부를 전달합니다.
+        let onCheckboxResult: ((Bool) -> Void)?
     }
 
     @Published var request: Request?
@@ -26,7 +30,9 @@ final class AppAlertCenter: ObservableObject {
         cancelTitle: String = "취소",
         confirmTitle: String = "삭제",
         isDestructive: Bool = true,
+        checkboxTitle: String? = nil,
         onCancel: @escaping () -> Void = {},
+        onCheckboxResult: ((Bool) -> Void)? = nil,
         onConfirm: @escaping () -> Void
     ) {
         request = Request(
@@ -36,8 +42,10 @@ final class AppAlertCenter: ObservableObject {
             confirmTitle: confirmTitle,
             isDestructive: isDestructive,
             showsCancel: true,
+            checkboxTitle: checkboxTitle,
             onConfirm: onConfirm,
-            onCancel: onCancel
+            onCancel: onCancel,
+            onCheckboxResult: onCheckboxResult
         )
     }
 
@@ -54,8 +62,10 @@ final class AppAlertCenter: ObservableObject {
             confirmTitle: buttonTitle,
             isDestructive: false,
             showsCancel: false,
+            checkboxTitle: nil,
             onConfirm: onDismiss,
-            onCancel: onDismiss
+            onCancel: onDismiss,
+            onCheckboxResult: nil
         )
     }
 
@@ -66,8 +76,10 @@ final class AppAlertCenter: ObservableObject {
 
 private struct AppAlertPanel: View {
     let request: AppAlertCenter.Request
-    let onConfirm: () -> Void
-    let onCancel: () -> Void
+    let onConfirm: (_ checkboxChecked: Bool) -> Void
+    let onCancel: (_ checkboxChecked: Bool) -> Void
+
+    @State private var checkboxChecked = false
 
     var body: some View {
         VStack(alignment: .leading, spacing: 14) {
@@ -80,16 +92,29 @@ private struct AppAlertPanel: View {
                 .fixedSize(horizontal: false, vertical: true)
                 .frame(maxWidth: .infinity, alignment: .leading)
 
+            if let checkboxTitle = request.checkboxTitle {
+                Toggle(isOn: $checkboxChecked) {
+                    Text(checkboxTitle)
+                        .font(.callout)
+                        .foregroundStyle(.secondary)
+                }
+                .toggleStyle(.checkbox)
+            }
+
             HStack {
                 Spacer(minLength: 0)
                 if request.showsCancel {
-                    Button(request.cancelTitle, action: onCancel)
-                        .keyboardShortcut(.cancelAction)
+                    Button(request.cancelTitle) {
+                        onCancel(checkboxChecked)
+                    }
+                    .keyboardShortcut(.cancelAction)
                 }
-                Button(request.confirmTitle, action: onConfirm)
-                    .buttonStyle(.borderedProminent)
-                    .tint(request.isDestructive ? .red : Color.accentColor)
-                    .keyboardShortcut(.defaultAction)
+                Button(request.confirmTitle) {
+                    onConfirm(checkboxChecked)
+                }
+                .buttonStyle(.borderedProminent)
+                .tint(request.isDestructive ? .red : Color.accentColor)
+                .keyboardShortcut(.defaultAction)
             }
         }
         .padding(20)
@@ -114,17 +139,24 @@ private struct AppAlertOverlayContent: View {
                     Color.black.opacity(0.45)
                         .ignoresSafeArea()
                         .onTapGesture {
+                            // 배경 탭은 체크박스 미적용 취소로 처리
                             request.onCancel()
                             alertCenter.dismiss()
                         }
 
                     AppAlertPanel(
                         request: request,
-                        onConfirm: {
+                        onConfirm: { checked in
+                            if request.checkboxTitle != nil {
+                                request.onCheckboxResult?(checked)
+                            }
                             request.onConfirm()
                             alertCenter.dismiss()
                         },
-                        onCancel: {
+                        onCancel: { checked in
+                            if request.checkboxTitle != nil {
+                                request.onCheckboxResult?(checked)
+                            }
                             request.onCancel()
                             alertCenter.dismiss()
                         }

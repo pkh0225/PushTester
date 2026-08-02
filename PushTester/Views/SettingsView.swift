@@ -71,12 +71,21 @@ struct SettingsView: View {
                     ForEach(AppSettingsCatalog.sections) { section in
                         settingsSection(section.title) {
                             ForEach(section.items) { item in
-                                Button {
-                                    handleTap(item)
-                                } label: {
-                                    settingsRow(item)
+                                switch item.control {
+                                case .action:
+                                    Button {
+                                        handleTap(item)
+                                    } label: {
+                                        settingsRow(item)
+                                    }
+                                    .buttonStyle(.plain)
+                                case .toggle(let defaultsKey, let defaultValue):
+                                    settingsToggleRow(
+                                        item,
+                                        defaultsKey: defaultsKey,
+                                        defaultValue: defaultValue
+                                    )
                                 }
-                                .buttonStyle(.plain)
                             }
                         }
                     }
@@ -158,6 +167,8 @@ struct SettingsView: View {
 
     private func handleTap(_ item: AppSettingsItem) {
         switch item.id {
+        case .checkForUpdateOnLaunch:
+            break
         case .checkForUpdate:
             AppUpdateChecker.checkFromSettings(using: appAlertCenter)
         case .resetAllData:
@@ -171,6 +182,19 @@ struct SettingsView: View {
                 onClose()
             }
         }
+    }
+
+    @ViewBuilder
+    private func settingsToggleRow(
+        _ item: AppSettingsItem,
+        defaultsKey: String,
+        defaultValue: Bool
+    ) -> some View {
+        SettingsToggleRow(
+            item: item,
+            defaultsKey: defaultsKey,
+            defaultValue: defaultValue
+        )
     }
 
     @ViewBuilder
@@ -195,6 +219,52 @@ struct SettingsView: View {
         }
         .padding(.vertical, 4)
         .contentShape(Rectangle())
+    }
+}
+
+/// `@AppStorage` 키를 항목별로 받기 위한 토글 행
+private struct SettingsToggleRow: View {
+    let item: AppSettingsItem
+    let defaultsKey: String
+    let defaultValue: Bool
+
+    @AppStorage private var isOn: Bool
+
+    init(item: AppSettingsItem, defaultsKey: String, defaultValue: Bool) {
+        self.item = item
+        self.defaultsKey = defaultsKey
+        self.defaultValue = defaultValue
+        _isOn = AppStorage(wrappedValue: defaultValue, defaultsKey)
+    }
+
+    var body: some View {
+        HStack(alignment: .top, spacing: 12) {
+            Image(systemName: item.systemImage)
+                .font(.system(size: 16, weight: .semibold))
+                .foregroundStyle(Color.accentColor)
+                .frame(width: 24, height: 24)
+
+            VStack(alignment: .leading, spacing: 3) {
+                Text(item.title)
+                    .font(.body.weight(.medium))
+                Text(item.subtitle)
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+
+            Spacer(minLength: 8)
+
+            Toggle("", isOn: $isOn)
+                .labelsHidden()
+                .toggleStyle(.switch)
+                .controlSize(.small)
+        }
+        .padding(.vertical, 4)
+        .contentShape(Rectangle())
+        .onTapGesture {
+            isOn.toggle()
+        }
     }
 }
 

@@ -1,6 +1,38 @@
 import Foundation
 import AppKit
 
+/// 업데이트 확인 관련 UserDefaults 키와 기본값
+enum AppUpdatePreferences {
+    static let checkOnLaunchKey = "PushTester.checkForUpdateOnLaunch"
+    static let snoozeUntilKey = "PushTester.updatePromptSnoozeUntil"
+
+    /// 실행 시 업데이트 체크. 키가 없으면 기본값 `true`.
+    static var checkOnLaunch: Bool {
+        get {
+            guard UserDefaults.standard.object(forKey: checkOnLaunchKey) != nil else { return true }
+            return UserDefaults.standard.bool(forKey: checkOnLaunchKey)
+        }
+        set { UserDefaults.standard.set(newValue, forKey: checkOnLaunchKey) }
+    }
+
+    static var isSnoozed: Bool {
+        guard let until = UserDefaults.standard.object(forKey: snoozeUntilKey) as? Date else {
+            return false
+        }
+        return until > Date()
+    }
+
+    static func snooze(forDays days: Int = 7) {
+        let until = Calendar.current.date(byAdding: .day, value: days, to: Date())
+            ?? Date().addingTimeInterval(TimeInterval(days * 86_400))
+        UserDefaults.standard.set(until, forKey: snoozeUntilKey)
+    }
+
+    static func clearSnooze() {
+        UserDefaults.standard.removeObject(forKey: snoozeUntilKey)
+    }
+}
+
 /// GitHub Releases 최신 태그와 앱 버전을 비교해 업데이트를 안내합니다.
 enum AppUpdateChecker {
     static let repositoryOwner = "pkh0225"
@@ -24,19 +56,22 @@ enum AppUpdateChecker {
         case unavailable
     }
 
-    /// 앱 시작 시: 새 버전이 있을 때만 안내합니다. 실패/최신은 무시합니다.
+    /// 앱 시작 시: 설정·스누즈를 반영하고, 새 버전이 있을 때만 안내합니다.
     static func checkAndPrompt(using alertCenter: AppAlertCenter) {
-        check(using: alertCenter, reportWhenCurrentOrFailed: false)
+        guard AppUpdatePreferences.checkOnLaunch else { return }
+        guard !AppUpdatePreferences.isSnoozed else { return }
+        check(using: alertCenter, reportWhenCurrentOrFailed: false, allowSnooze: true)
     }
 
-    /// 설정에서 수동 확인: 최신/실패도 결과를 보여 줍니다.
+    /// 설정에서 수동 확인: 최신/실패도 결과를 보여 줍니다. 스누즈는 적용하지 않습니다.
     static func checkFromSettings(using alertCenter: AppAlertCenter) {
-        check(using: alertCenter, reportWhenCurrentOrFailed: true)
+        check(using: alertCenter, reportWhenCurrentOrFailed: true, allowSnooze: false)
     }
 
     private static func check(
         using alertCenter: AppAlertCenter,
-        reportWhenCurrentOrFailed: Bool
+        reportWhenCurrentOrFailed: Bool,
+        allowSnooze: Bool
     ) {
         Task {
             let result = await performCheck()
@@ -53,7 +88,15 @@ enum AppUpdateChecker {
                         """,
                         cancelTitle: "나중에",
                         confirmTitle: "GitHub에서 받기",
-                        isDestructive: false
+                        isDestructive: false,
+                        checkboxTitle: allowSnooze ? "일주일동안 보지 않기" : nil,
+                        onCheckboxResult: allowSnooze
+                            ? { checked in
+                                if checked {
+                                    AppUpdatePreferences.snooze(forDays: 7)
+                                }
+                            }
+                            : nil
                     ) {
                         NSWorkspace.shared.open(update.pageURL)
                     }

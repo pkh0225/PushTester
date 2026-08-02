@@ -17,6 +17,7 @@ enum AppSettingsSectionID: String, CaseIterable, Identifiable {
 
 /// 설정 항목 식별자. 새 기능을 넣을 때 case와 카탈로그 항목을 추가합니다.
 enum AppSettingsItemID: String, Identifiable {
+    case checkForUpdateOnLaunch
     case checkForUpdate
     case resetAllData
 
@@ -28,6 +29,14 @@ enum AppSettingsItemRole {
     case destructive
 }
 
+/// 설정 행의 조작 방식
+enum AppSettingsControl {
+    /// 탭하면 액션 실행
+    case action
+    /// UserDefaults Bool 토글 (`defaultValue`는 키 부재 시)
+    case toggle(defaultsKey: String, defaultValue: Bool)
+}
+
 /// 설정 목록에 표시되는 한 줄
 struct AppSettingsItem: Identifiable {
     let id: AppSettingsItemID
@@ -36,6 +45,25 @@ struct AppSettingsItem: Identifiable {
     let subtitle: String
     let systemImage: String
     let role: AppSettingsItemRole
+    let control: AppSettingsControl
+
+    init(
+        id: AppSettingsItemID,
+        section: AppSettingsSectionID,
+        title: String,
+        subtitle: String,
+        systemImage: String,
+        role: AppSettingsItemRole,
+        control: AppSettingsControl = .action
+    ) {
+        self.id = id
+        self.section = section
+        self.title = title
+        self.subtitle = subtitle
+        self.systemImage = systemImage
+        self.role = role
+        self.control = control
+    }
 }
 
 struct AppSettingsSection: Identifiable {
@@ -58,6 +86,18 @@ enum AppSettingsCatalog {
         switch section {
         case .update:
             return [
+                AppSettingsItem(
+                    id: .checkForUpdateOnLaunch,
+                    section: .update,
+                    title: "실행 시 업데이트 체크",
+                    subtitle: "앱을 시작할 때 GitHub 최신 릴리즈를 확인합니다.",
+                    systemImage: "arrow.clockwise.circle",
+                    role: .normal,
+                    control: .toggle(
+                        defaultsKey: AppUpdatePreferences.checkOnLaunchKey,
+                        defaultValue: true
+                    )
+                ),
                 AppSettingsItem(
                     id: .checkForUpdate,
                     section: .update,

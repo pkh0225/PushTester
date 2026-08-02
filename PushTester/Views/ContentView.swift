@@ -596,7 +596,7 @@ struct ContentView: View {
 
     private func handleSettingsAction(_ itemID: AppSettingsItemID) {
         switch itemID {
-        case .checkForUpdate:
+        case .checkForUpdateOnLaunch, .checkForUpdate:
             break
         case .resetAllData:
             AppDataReset.resetPersistedStores(
